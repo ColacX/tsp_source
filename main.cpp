@@ -111,16 +111,24 @@ int main(int argc, char* argv[])
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	SDL_Window* sdl_window;
-	sdl_window = SDL_CreateWindow("", 10, 20, 1000, 1000, SDL_WINDOW_OPENGL);
+	sdl_window = SDL_CreateWindow("avalg13_project2_tsp", 10, 20, 1000, 1000, SDL_WINDOW_OPENGL);
 
 	SDL_GLContext sdl_gl_context;
 	sdl_gl_context = SDL_GL_CreateContext(sdl_window);
 	SDL_GL_MakeCurrent(sdl_window, sdl_gl_context);
 
 	if(TTF_Init() == -1)
+	{
+		__debugbreak();
 		throw "TTF_Init";
+	}
 
-	TTF_Font* text_font = TTF_OpenFont("consola.ttf", 72);
+	TTF_Font* text_font = TTF_OpenFont("consola.ttf", 9);
+	if(!text_font)
+	{
+		__debugbreak();
+		throw "TTF_OpenFont";
+	}
 
 	bool program_running = true;
 	while(program_running)
@@ -154,35 +162,39 @@ int main(int argc, char* argv[])
 
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
-		glEnable(GL_COLOR);
-		glBegin(GL_LINES);
+		//draw all nodes
+		{
+			SDL_Surface* sdl_surface = TTF_RenderText_Blended(
+				text_font, //TTF or OTF text font
+				"100",
+				rgba_color //text rgba_color
+			);
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glPixelZoom(1.0f, -1.0f);
+			glRasterPos2f(0, 0);
+			glDrawPixels(sdl_surface->w, sdl_surface->h, GL_RGBA, GL_UNSIGNED_BYTE, sdl_surface->pixels);
+			glDisable(GL_BLEND);
+			SDL_FreeSurface(sdl_surface);
+		}
+
+		//draw all lines
+		{
+			glEnable(GL_COLOR);
+			glBegin(GL_LINES);
 	
-		float s = 0.1f; //scale
-		glColor4f(1, 0, 0, 1);
-		glVertex2f(0, 0);
+			float s = 0.1f; //scale
+			glColor4f(1, 0, 0, 1);
+			glVertex2f(0, 0);
 
-		glColor4f(0, 1, 0, 1);
-		glVertex2f(s, s);
+			glColor4f(0, 1, 0, 1);
+			glVertex2f(s, s);
 	
-		glEnd();
-
-		glScalef(1, 1, 1);
-
-		SDL_Surface* sdl_surface = TTF_RenderText_Blended(
-			text_font, //TTF or OTF text font
-			"hello",
-			rgba_color //text rgba_color
-		);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glPixelZoom(1.0f, -1.0f);
-		glRasterPos2f(0, 0);
-		glDrawPixels(sdl_surface->w, sdl_surface->h, GL_RGBA, GL_UNSIGNED_BYTE, sdl_surface->pixels);
+			glEnd();
+		}
 
 		SDL_GL_SwapWindow(sdl_window);
-		glDisable(GL_BLEND);
-		SDL_FreeSurface(sdl_surface);
 	}
 
 	//destruct
