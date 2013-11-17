@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <vector>
 
+#define round(x) x + 0.5f
+
 struct Node
 {
 	float x, y;
@@ -13,12 +15,11 @@ std::istream& operator>>(std::istream& in, Node& node)
 	return std::cin >> node.x >> node.y;
 }
 
-bool operator<(const Node& l, const Node& r)
+bool less_compare(const Node& l, const Node& r)
 {
 	if (l.x == r.x)
 		return l.y < r.y;
 	return l.x < r.x;
-
 }
 
 int distance(const Node& l, const Node& r)
@@ -37,10 +38,10 @@ int pathLength(const std::vector<Node>& nodes)
 	return length;
 }
 
-std::vector<int> allPermutations(const std::vector<Node>& nodes)
+std::vector<int> allPermutations(std::vector<Node>& nodes)
 {
 	std::vector<int> path(nodes.size());
-	std::sort(nodes.begin(), nodes.end());
+	std::sort(nodes.begin(), nodes.end(), less_compare);
 	int minLength = std::numeric_limits<int>::max();
 	int permutation = 0;
 	do
@@ -55,7 +56,8 @@ std::vector<int> allPermutations(const std::vector<Node>& nodes)
 			}
 		}
 		permutation++;
-	} while (std::next_permutation(nodes.begin(), nodes.end()));
+	}
+	while(std::next_permutation(nodes.begin(), nodes.end(), less_compare));
 
 	return std::move(path);
 }
@@ -86,6 +88,7 @@ int main(int argc, char* argv[])
 	size_t numNodes = 0;
 	std::cin >> numNodes;
 	std::vector<Node> nodes(numNodes);
+
 	for (size_t ii = 0; ii < numNodes; ii++)
 	{
 		std::cin >> nodes[ii];
@@ -101,9 +104,9 @@ int main(int argc, char* argv[])
 	{
 		shortestPath = greedy(nodes);
 	}
-	for (int i : shortestPath)
+	for(int ia=0; ia<shortestPath.size(); ia++)
 	{
-		std::cout << i << "\n";
+		std::cout << shortestPath[ia] << "\n";
 	}
 	std::cout << std::endl;
 	return 0;
