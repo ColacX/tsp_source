@@ -2,6 +2,13 @@
 #include <algorithm>
 #include <vector>
 
+#ifdef WIN32
+#include <glut.h>
+#include <Windows.h>
+#undef min
+#undef max
+#endif
+
 #define round(x) x + 0.5f
 
 struct Node
@@ -79,9 +86,45 @@ std::vector<int> greedy(const std::vector<Node>& nodes)
 	return std::move(path);
 }
 
+void display_function()
+{
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glutSwapBuffers();
+}
+
+void idle_function()
+{
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	
+	glEnable(GL_COLOR);
+	glBegin(GL_LINES);
+	
+	float scale = 1.0f;
+	glColor4f(1, 0, 0, 1);
+	glVertex2f(0, 0);
+
+	glColor4f(0, 1, 0, 1);
+	glVertex2f(scale, scale);
+	
+	glEnd();
+
+	glutSwapBuffers();
+}
+
 int main(int argc, char* argv[])
 {
 #ifdef WIN32
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_ALPHA);
+	glutInitWindowSize(1000, 1000);
+
+	glutCreateWindow("avalg13_project2_tsp");
+	glutDisplayFunc(display_function);
+	glutIdleFunc(idle_function);
+	//glutReshapeFunc();
+	//glutKeyboardFunc();
+	glutMainLoop();
+
 	FILE* file = fopen("tsp_source/input0.txt", "r+");
 #else
 	FILE* file = stdin;
@@ -98,10 +141,10 @@ int main(int argc, char* argv[])
 
 	std::vector<int> shortestPath;
 
-	//if (numNodes <= 11)
-	{
-		//shortestPath = allPermutations(nodes);
-	}
+	//if(numNodes <= 11)
+	//{
+		shortestPath = allPermutations(nodes);
+	//}
 	//else
 	{
 		shortestPath = greedy(nodes);
@@ -114,6 +157,7 @@ int main(int argc, char* argv[])
 	std::cout << std::endl;
 
 #ifdef WIN32
+	fprintf(stderr, "main: end\n");
 	getchar();
 #endif
 	return 0;
