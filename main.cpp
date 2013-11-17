@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
 		SDL_Quit();
 	}
 
-	FILE* file = fopen("tsp_source/input0.txt", "r+");
+	FILE* file = fopen("input0.txt", "r+");
 #else
 	FILE* file = stdin;
 #endif
