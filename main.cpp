@@ -19,7 +19,7 @@
 #pragma comment(lib, "SDL2_ttf.lib")
 #endif
 
-#define round(x) int(x + 0.5f)
+#define round(x) int((x) + 0.5f)
 
 SDL_Color rgba_color = {0xff, 0x00, 0x00, 0x00};
 
