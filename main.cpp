@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <stdexcept>
 
 #ifdef WIN32
 #include <Windows.h>
@@ -20,7 +21,6 @@
 
 #define round(x) int(x + 0.5f)
 
-TTF_Font* text_font;
 SDL_Color rgba_color = {0xff, 0x00, 0x00, 0x00};
 
 struct Node
@@ -98,11 +98,17 @@ std::vector<int> greedy(const std::vector<Node>& nodes)
 	return std::move(path);
 }
 
-int main(int argc, char* argv[])
+struct SDLContext
 {
-#ifdef WIN32
-	if(SDL_Init(SDL_INIT_EVENTS) != 0)
-		throw "SDL_Init";
+	SDL_Window* window;
+	SDL_GLContext glContext;
+	TTF_Font* font;
+};
+
+SDLContext initSDL()
+{
+	if (SDL_Init(SDL_INIT_EVENTS) != 0)
+		throw std::runtime_error("SDL_Init");
 
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
@@ -113,37 +119,45 @@ int main(int argc, char* argv[])
 	SDL_Window* sdl_window;
 	sdl_window = SDL_CreateWindow("avalg13_project2_tsp", 10, 20, 1000, 1000, SDL_WINDOW_OPENGL);
 
-	SDL_GLContext sdl_gl_context;
-	sdl_gl_context = SDL_GL_CreateContext(sdl_window);
+	SDL_GLContext sdl_gl_context = SDL_GL_CreateContext(sdl_window);
 	SDL_GL_MakeCurrent(sdl_window, sdl_gl_context);
 
-	if(TTF_Init() == -1)
+	if (TTF_Init() == -1)
 	{
 		__debugbreak();
-		throw "TTF_Init";
+		throw std::runtime_error("TTF_Init");
 	}
 
 	TTF_Font* text_font = TTF_OpenFont("consola.ttf", 9);
-	if(!text_font)
+	if (!text_font)
 	{
 		__debugbreak();
-		throw "TTF_OpenFont";
+		throw std::runtime_error("TTF_OpenFont");
 	}
 
+	SDLContext context;
+	context.window = sdl_window;
+	context.glContext = sdl_gl_context;
+	context.font = text_font;
+	return context;
+}
+
+void mainLoop(SDLContext& context)
+{
 	bool program_running = true;
-	while(program_running)
+	while (program_running)
 	{
 		//process sdl events
 		SDL_Event ev;
-		while(SDL_PollEvent(&ev))
+		while (SDL_PollEvent(&ev))
 		{
-			switch(ev.type)
+			switch (ev.type)
 			{
 			case SDL_QUIT:
 				program_running = false;
 				break;
 			case SDL_KEYDOWN:
-				switch(ev.key.keysym.sym)
+				switch (ev.key.keysym.sym)
 				{
 				case SDLK_ESCAPE:
 					exit(0);
@@ -160,15 +174,15 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		//draw all nodes
 		{
 			SDL_Surface* sdl_surface = TTF_RenderText_Blended(
-				text_font, //TTF or OTF text font
+				context.font, //TTF or OTF text font
 				"100",
 				rgba_color //text rgba_color
-			);
+				);
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -183,26 +197,35 @@ int main(int argc, char* argv[])
 		{
 			glEnable(GL_COLOR);
 			glBegin(GL_LINES);
-	
+
 			float s = 0.1f; //scale
 			glColor4f(1, 0, 0, 1);
 			glVertex2f(0, 0);
 
 			glColor4f(0, 1, 0, 1);
 			glVertex2f(s, s);
-	
+
 			glEnd();
 		}
 
-		SDL_GL_SwapWindow(sdl_window);
+		SDL_GL_SwapWindow(context.window);
 	}
+}
 
-	//destruct
-	{
-		SDL_GL_DeleteContext(sdl_gl_context);
-		SDL_DestroyWindow(sdl_window);
-		SDL_Quit();
-	}
+void destroySDLContext(SDLContext& context)
+{
+	SDL_GL_DeleteContext(context.glContext);
+	SDL_DestroyWindow(context.window);
+	TTF_CloseFont(context.font);
+	SDL_Quit();
+}
+
+int main(int argc, char* argv[])
+{
+#ifdef WIN32
+	SDLContext context =  initSDL();
+	mainLoop(context);
+	destroySDLContext(context);
 
 	FILE* file = fopen("input0.txt", "r+");
 #else
