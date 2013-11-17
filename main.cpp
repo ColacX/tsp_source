@@ -18,7 +18,7 @@
 #pragma comment(lib, "SDL2_ttf.lib")
 #endif
 
-#define round(x) x + 0.5f
+#define round(x) int(x + 0.5f)
 
 TTF_Font* text_font;
 SDL_Color rgba_color = {0xff, 0x00, 0x00, 0x00};
@@ -38,7 +38,7 @@ bool less_compare(const Node& l, const Node& r)
 
 int distance(const Node& l, const Node& r)
 {
-	return int(round(std::sqrt(l.x * r.x + l.y * r.y)));
+	return round(std::sqrt(l.x * r.x + l.y * r.y));
 }
 
 int pathLength(const std::vector<Node>& nodes)
