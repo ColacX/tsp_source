@@ -63,7 +63,7 @@ std::vector<int> greedy(const std::vector<Node>& nodes)
 	std::vector<bool> used(nodes.size());
 	path[0] = 0;
 	used[0] = true;
-	for (size_t ii = 0; ii < nodes.size(); ii++)
+	for (size_t ii = 1; ii < nodes.size(); ii++)
 	{
 		int best = -1;
 		for (int jj = 0; jj < int(nodes.size()); jj++)
@@ -72,6 +72,7 @@ std::vector<int> greedy(const std::vector<Node>& nodes)
 			if (!used[jj] && (best == -1 || distance(current, nodes[jj]) < distance(current, nodes[best])))
 				best = jj;
 		}
+
 		path[ii] = best;
 		used[best] = true;
 	}
@@ -96,14 +97,16 @@ int main(int argc, char* argv[])
 	}
 
 	std::vector<int> shortestPath;
-	if (numNodes <= 11)
+
+	//if (numNodes <= 11)
 	{
-		shortestPath = allPermutations(nodes);
+		//shortestPath = allPermutations(nodes);
 	}
-	else
+	//else
 	{
 		shortestPath = greedy(nodes);
 	}
+
 	for(int ia=0; ia<shortestPath.size(); ia++)
 	{
 		std::cout << shortestPath[ia] << "\n";
