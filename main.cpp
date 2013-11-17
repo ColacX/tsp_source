@@ -4,9 +4,7 @@
 
 #ifdef WIN32
 #include <glut.h>
-#include <Windows.h>
-#undef min
-#undef max
+#pragma comment(lib, "glut32.lib")
 #endif
 
 #define round(x) x + 0.5f
@@ -99,15 +97,19 @@ void idle_function()
 	glEnable(GL_COLOR);
 	glBegin(GL_LINES);
 	
-	float scale = 1.0f;
+	float s = 0.1f; //scale
 	glColor4f(1, 0, 0, 1);
 	glVertex2f(0, 0);
 
 	glColor4f(0, 1, 0, 1);
-	glVertex2f(scale, scale);
+	glVertex2f(s, s);
 	
 	glEnd();
 
+	glRasterPos2f(0, 0);
+	glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, '0');
+
+	glScalef(1, 1, 1);
 	glutSwapBuffers();
 }
 
@@ -117,7 +119,6 @@ int main(int argc, char* argv[])
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_ALPHA);
 	glutInitWindowSize(1000, 1000);
-
 	glutCreateWindow("avalg13_project2_tsp");
 	glutDisplayFunc(display_function);
 	glutIdleFunc(idle_function);
