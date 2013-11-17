@@ -87,12 +87,6 @@ std::vector<int> greedy(const std::vector<Node>& nodes)
 void display_function()
 {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	glutSwapBuffers();
-}
-
-void idle_function()
-{
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
 	glEnable(GL_COLOR);
 	glBegin(GL_LINES);
@@ -107,10 +101,16 @@ void idle_function()
 	glEnd();
 
 	glRasterPos2f(0, 0);
-	glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, '0');
+	static int xxx = 0;
+	glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, '0' + xxx++);
 
 	glScalef(1, 1, 1);
 	glutSwapBuffers();
+}
+
+void keyboard_function(unsigned char key, int x, int y)
+{
+	glutPostRedisplay();
 }
 
 int main(int argc, char* argv[])
@@ -121,9 +121,9 @@ int main(int argc, char* argv[])
 	glutInitWindowSize(1000, 1000);
 	glutCreateWindow("avalg13_project2_tsp");
 	glutDisplayFunc(display_function);
-	glutIdleFunc(idle_function);
+	//glutIdleFunc(idle_function);
 	//glutReshapeFunc();
-	//glutKeyboardFunc();
+	glutKeyboardFunc(keyboard_function);
 	glutMainLoop();
 
 	FILE* file = fopen("tsp_source/input0.txt", "r+");
