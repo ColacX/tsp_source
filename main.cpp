@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
 			SDL_FreeSurface(sdl_surface);
 		}
 
-		//draw all lines
+		//draw all edges
 		{
 			glEnable(GL_COLOR);
 			glBegin(GL_LINES);
