@@ -10,11 +10,6 @@ struct Node
 	int index;
 };
 
-std::istream& operator>>(std::istream& in, Node& node)
-{
-	return std::cin >> node.x >> node.y;
-}
-
 bool less_compare(const Node& l, const Node& r)
 {
 	if (l.x == r.x)
@@ -85,13 +80,18 @@ std::vector<int> greedy(const std::vector<Node>& nodes)
 
 int main(int argc, char* argv[])
 {
+#ifdef WIN32
+	FILE* file = fopen("tsp_source/input0.txt", "r+");
+#else
+	FILE* file = stdin;
+#endif
 	size_t numNodes = 0;
-	std::cin >> numNodes;
+	fscanf(file, "%d", &numNodes);
 	std::vector<Node> nodes(numNodes);
 
 	for (size_t ii = 0; ii < numNodes; ii++)
 	{
-		std::cin >> nodes[ii];
+		fscanf(file, "%f %f", &nodes[ii].x, &nodes[ii].y);
 		nodes[ii].index = ii;
 	}
 
@@ -109,6 +109,10 @@ int main(int argc, char* argv[])
 		std::cout << shortestPath[ia] << "\n";
 	}
 	std::cout << std::endl;
+
+#ifdef WIN32
+	getchar();
+#endif
 	return 0;
 }
 
