@@ -252,9 +252,9 @@ int main(int argc, char* argv[])
 		shortestPath = greedy(nodes);
 	}
 
-	for(int ia=0; ia<shortestPath.size(); ia++)
+	for(int& index : shortestPath)
 	{
-		std::cout << shortestPath[ia] << "\n";
+		std::cout << index << "\n";
 	}
 	std::cout << std::endl;
 
