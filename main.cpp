@@ -4,52 +4,12 @@
 #include <stdexcept>
 #include <sstream>
 
-#ifdef WIN32
-#include <Windows.h>
-#undef min
-#undef max
+#include "Node.h"
+#include "graphic.h"
 
-#include <gl\GL.h>
-#pragma comment(lib, "opengl32.lib")
-
-#include <SDL.h>
-#pragma comment(lib, "SDL2.lib")
-#undef main
-
-#include <SDL_ttf.h>
-#pragma comment(lib, "SDL2_ttf.lib")
-#endif
 
 #define round(x) int((x) + 0.5f)
 
-struct Node
-{
-	float x, y;
-	int index;
-};
-
-bool less_compare(const Node& l, const Node& r)
-{
-	if (l.x == r.x)
-		return l.y < r.y;
-	return l.x < r.x;
-}
-
-int distance(const Node& l, const Node& r)
-{
-	return round(std::sqrt(l.x * r.x + l.y * r.y));
-}
-
-int pathLength(const std::vector<Node>& nodes)
-{
-	int length = 0;
-	for (size_t ii = 0; ii < nodes.size() - 1; ii++)
-	{
-		length += distance(nodes[ii], nodes[ii + 1]);
-	}
-	length += distance(nodes.front(), nodes.back());
-	return length;
-}
 
 std::vector<int> allPermutations(std::vector<Node>& nodes)
 {
@@ -99,8 +59,6 @@ std::vector<int> greedy(const std::vector<Node>& nodes)
 std::vector<Node> nodes;
 std::vector<int> shortestPath;
 
-#include "graphic.h"
-
 int main(int argc, char* argv[])
 {
 #ifdef WIN32
@@ -118,12 +76,13 @@ int main(int argc, char* argv[])
 		fscanf(file, "%f %f", &nodes[ii].x, &nodes[ii].y);
 		nodes[ii].index = ii;
 	}
-
+	/*
 	if (numNodes <= 11)
 	{
 		shortestPath = allPermutations(nodes);
 	}
 	else
+	*/
 	{
 		shortestPath = greedy(nodes);
 	}
@@ -137,8 +96,8 @@ int main(int argc, char* argv[])
 	std::cout << std::endl;
 
 #ifdef WIN32
-	graphic::draw_path();
-	graphic::run();
+	graphic::draw_path(nodes, shortestPath);
+	graphic::run(nodes, shortestPath);
 	fprintf(stderr, "main: end\n");
 #endif
 	return 0;

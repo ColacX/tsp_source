@@ -1,11 +1,27 @@
 #pragma once
 
+#ifdef WIN32
+#include <Windows.h>
+#undef min
+#undef max
+
+#include <gl\GL.h>
+#pragma comment(lib, "opengl32.lib")
+
+#include <SDL.h>
+#pragma comment(lib, "SDL2.lib")
+#undef main
+
+#include <SDL_ttf.h>
+#pragma comment(lib, "SDL2_ttf.lib")
+#endif
+
 namespace graphic
 {
 	SDL_Window* sdl_window;
 	SDL_GLContext sdl_gl_context;
 	TTF_Font* text_font;
-	float s = 0.01;
+	float s = 0.01f;
 	SDL_Color bgra_color = { 0xff, 0xff, 0xff, 0x00 };
 
 	void construct()
@@ -38,7 +54,7 @@ namespace graphic
 		}
 	}
 
-	void draw_path()
+	void draw_path(const std::vector<Node>& nodes, const std::vector<int>& shortestPath)
 	{
 		if (nodes.empty() || shortestPath.empty())
 			return;
@@ -51,7 +67,7 @@ namespace graphic
 			//draw all nodes
 			for (int ia = 0; ia < nodes.size(); ia++)
 			{
-				Node& n = nodes[ia];
+				const Node& n = nodes[ia];
 				std::stringstream ss;
 				ss << n.index;
 
@@ -70,12 +86,12 @@ namespace graphic
 				SDL_FreeSurface(sdl_surface);
 			}
 
-			Node& n_start = nodes[shortestPath[0]];
-			Node* p = &n_start;
+			const Node& n_start = nodes[shortestPath[0]];
+			const Node* p = &n_start;
 
 			for (int ia = 1; ia < ib; ia++)
 			{
-				Node& n = nodes[shortestPath[ia]];
+				const Node& n = nodes[shortestPath[ia]];
 
 				glEnable(GL_COLOR);
 				glBegin(GL_LINES);
@@ -107,7 +123,7 @@ namespace graphic
 		}
 	}
 
-	void run()
+	void run(const std::vector<Node>& nodes, const std::vector<int>& shortestPath)
 	{
 		bool program_running = true;
 		while (program_running)
@@ -128,7 +144,7 @@ namespace graphic
 						exit(0);
 						break;
 					case SDLK_F1:
-						draw_path();
+						draw_path(nodes, shortestPath);
 						break;
 					default:
 						break;
