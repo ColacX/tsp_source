@@ -5,13 +5,15 @@
 #include <sstream>
 
 #include "Node.h"
+#ifdef WIN32
 #include "graphic.h"
+#endif
 
 
 #define round(x) int((x) + 0.5f)
 
 
-std::vector<int> allPermutations(std::vector<Node>& nodes)
+std::vector<int> allPermutations(std::vector<Node> nodes)
 {
 	std::vector<int> path(nodes.size());
 	std::sort(nodes.begin(), nodes.end(), less_compare);
@@ -56,13 +58,19 @@ std::vector<int> greedy(const std::vector<Node>& nodes)
 	return std::move(path);
 }
 
+std::vector<int> opt2(std::vector<Node> nodes);
+
 std::vector<Node> nodes;
 std::vector<int> shortestPath;
 
 int main(int argc, char* argv[])
 {
 #ifdef WIN32
-	graphic::construct();
+	bool showGraphics = false;
+	if (showGraphics)
+	{
+		graphic::construct();
+	}
 	FILE* file = fopen("input0.txt", "r+");
 #else
 	FILE* file = stdin;
@@ -76,6 +84,7 @@ int main(int argc, char* argv[])
 		fscanf(file, "%f %f", &nodes[ii].x, &nodes[ii].y);
 		nodes[ii].index = ii;
 	}
+
 	/*
 	if (numNodes <= 11)
 	{
@@ -84,11 +93,14 @@ int main(int argc, char* argv[])
 	else
 	*/
 	{
-		shortestPath = greedy(nodes);
+		shortestPath = opt2(nodes);
 	}
-
-	shortestPath = {7,8,9,3,2,5,6,0,1,4};
-
+	std::vector<Node> path(nodes.size());
+	for (size_t ii = 0; ii < path.size(); ii++)
+	{
+		path[ii] = nodes[shortestPath[ii]];
+	}
+	std::cerr << "Length:" << pathLength(path) << std::endl;
 	for (int& index : shortestPath)
 	{
 		std::cout << index << "\n";
@@ -96,8 +108,11 @@ int main(int argc, char* argv[])
 	std::cout << std::endl;
 
 #ifdef WIN32
-	graphic::draw_path(nodes, shortestPath);
-	graphic::run(nodes, shortestPath);
+	if (showGraphics)
+	{
+		graphic::draw_path(nodes, shortestPath);
+		graphic::run(nodes, shortestPath);
+	}
 	fprintf(stderr, "main: end\n");
 #endif
 	return 0;

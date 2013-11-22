@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <cmath>
+#include <stddef.h>
 
 
 struct Node
@@ -29,4 +31,14 @@ inline int pathLength(const std::vector<Node>& nodes)
 	}
 	length += distance(nodes.front(), nodes.back());
 	return length;
+}
+
+inline std::vector<int> getPathVector(const std::vector<Node>& nodes)
+{
+	std::vector<int> path(nodes.size());
+	for (size_t ii = 0; ii < path.size(); ii++)
+	{
+		path[ii] = nodes[ii].index;
+	}
+	return std::move(path);
 }
