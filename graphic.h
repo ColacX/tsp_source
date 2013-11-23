@@ -60,12 +60,12 @@ namespace graphic
 			return;
 
 		//draw all edges
-		for (int ib = 0; ib <= shortestPath.size(); ib++)
+		for (size_t ib = 0; ib <= shortestPath.size(); ib++)
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			//draw all nodes
-			for (int ia = 0; ia < nodes.size(); ia++)
+			for (size_t ia = 0; ia < nodes.size(); ia++)
 			{
 				const Node& n = nodes[ia];
 				std::stringstream ss;
@@ -89,7 +89,7 @@ namespace graphic
 			const Node& n_start = nodes[shortestPath[0]];
 			const Node* p = &n_start;
 
-			for (int ia = 1; ia < ib; ia++)
+			for (size_t ia = 1; ia < ib; ia++)
 			{
 				const Node& n = nodes[shortestPath[ia]];
 
