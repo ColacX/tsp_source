@@ -21,3 +21,5 @@ int pathLength(const std::vector<Node>& nodes);
 int pathLength(const std::vector<int>& path, const std::vector<Node>& nodes);
 
 std::vector<int> getPathVector(const std::vector<Node>& nodes);
+
+std::vector<Node> randomTest(int testSize);

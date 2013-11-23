@@ -88,15 +88,12 @@ int main(int argc, char* argv[])
 		fscanf(file, "%f %f", &nodes[ii].x, &nodes[ii].y);
 		nodes[ii].index = ii;
 	}
-
 	TSPResult result;
-	/*
-	if (numNodes <= 11)
+	if (numNodes >= 170)
 	{
-		result = allPermutations(nodes);
+		result = greedy(nodes);
 	}
 	else
-	*/
 	{
 		result = opt2(nodes);
 	}

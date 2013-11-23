@@ -2,7 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <stddef.h>
-
+#include <random>
 
 bool less_compare(const Node& l, const Node& r)
 {
@@ -45,4 +45,17 @@ std::vector<int> getPathVector(const std::vector<Node>& nodes)
 		path[ii] = nodes[ii].index;
 	}
 	return std::move(path);
+}
+
+
+std::vector<Node> randomTest(int testSize)
+{
+	std::vector<Node> nodes(testSize);
+	for (size_t ii = 0; ii < nodes.size(); ii++)
+	{
+		nodes[ii].x = float(rand() % 10000);
+		nodes[ii].y = float(rand() % 10000);
+		nodes[ii].index = ii;
+	}
+	return std::move(nodes);
 }
