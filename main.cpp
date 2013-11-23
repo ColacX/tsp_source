@@ -13,7 +13,7 @@
 #define round(x) int((x) + 0.5f)
 
 
-std::vector<int> allPermutations(std::vector<Node> nodes)
+TSPResult allPermutations(std::vector<Node> nodes)
 {
 	std::vector<int> path(nodes.size());
 	std::sort(nodes.begin(), nodes.end(), less_compare);
@@ -33,10 +33,13 @@ std::vector<int> allPermutations(std::vector<Node> nodes)
 		permutation++;
 	} while (std::next_permutation(nodes.begin(), nodes.end(), less_compare));
 
-	return std::move(path);
+	TSPResult result;
+	result.path = std::move(path);
+	result.length = pathLength(path, nodes);
+	return std::move(result);
 }
 
-std::vector<int> greedy(const std::vector<Node>& nodes)
+TSPResult greedy(const std::vector<Node>& nodes)
 {
 	std::vector<int> path(nodes.size());
 	std::vector<bool> used(nodes.size());
@@ -55,13 +58,14 @@ std::vector<int> greedy(const std::vector<Node>& nodes)
 		path[ii] = best;
 		used[best] = true;
 	}
-	return std::move(path);
+	TSPResult result;
+	result.length = pathLength(path, nodes);
+	result.path = std::move(path);
+	return std::move(result);
 }
 
-std::vector<int> opt2(std::vector<Node> nodes);
+TSPResult opt2(std::vector<Node> nodes);
 
-std::vector<Node> nodes;
-std::vector<int> shortestPath;
 
 int main(int argc, char* argv[])
 {
@@ -77,7 +81,7 @@ int main(int argc, char* argv[])
 #endif
 	size_t numNodes = 0;
 	fscanf(file, "%d", &numNodes);
-	nodes.resize(numNodes);
+	std::vector<Node> nodes(numNodes);
 
 	for (size_t ii = 0; ii < numNodes; ii++)
 	{
@@ -85,23 +89,24 @@ int main(int argc, char* argv[])
 		nodes[ii].index = ii;
 	}
 
+	TSPResult result;
 	/*
 	if (numNodes <= 11)
 	{
-		shortestPath = allPermutations(nodes);
+		result = allPermutations(nodes);
 	}
 	else
 	*/
 	{
-		shortestPath = opt2(nodes);
+		result = opt2(nodes);
 	}
-	std::vector<Node> path(nodes.size());
-	for (size_t ii = 0; ii < path.size(); ii++)
+	TSPResult greedyResult = greedy(nodes);
+	if (greedyResult.length < result.length)
 	{
-		path[ii] = nodes[shortestPath[ii]];
+		result = greedyResult;
 	}
-	std::cerr << "Length:" << pathLength(path) << std::endl;
-	for (int& index : shortestPath)
+	std::cerr << "Length:" << result.length << std::endl;
+	for (int index : result.path)
 	{
 		std::cout << index << "\n";
 	}
@@ -110,8 +115,8 @@ int main(int argc, char* argv[])
 #ifdef WIN32
 	if (showGraphics)
 	{
-		graphic::draw_path(nodes, shortestPath);
-		graphic::run(nodes, shortestPath);
+		graphic::draw_path(nodes, result.path);
+		graphic::run(nodes, result.path);
 	}
 	fprintf(stderr, "main: end\n");
 #endif

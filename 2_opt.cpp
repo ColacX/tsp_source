@@ -1,9 +1,8 @@
 #include <vector>
 #include "Node.h"
 
-std::vector<int> opt2(std::vector<Node> nodes)
+TSPResult opt2(std::vector<Node> nodes)
 {
-	int minDistance = pathLength(nodes);
 	while (true)
 	{
 		for (int ii = 0; ii < int(nodes.size()) - 2; ii++)
@@ -38,5 +37,8 @@ std::vector<int> opt2(std::vector<Node> nodes)
 		//No improvement was found
 		break;
 	}
-	return getPathVector(nodes);
+	TSPResult result;
+	result.path = getPathVector(nodes);
+	result.length = pathLength(nodes);
+	return std::move(result);
 }

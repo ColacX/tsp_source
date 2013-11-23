@@ -4,6 +4,12 @@
 #include <stddef.h>
 
 
+struct TSPResult
+{
+	int length;
+	std::vector<int> path;
+};
+
 struct Node
 {
 	float x, y;
@@ -30,6 +36,16 @@ inline int pathLength(const std::vector<Node>& nodes)
 		length += distance(nodes[ii], nodes[ii + 1]);
 	}
 	length += distance(nodes.front(), nodes.back());
+	return length;
+}
+inline int pathLength(const std::vector<int>& path, const std::vector<Node>& nodes)
+{
+	int length = 0;
+	for (size_t ii = 0; ii < nodes.size() - 1; ii++)
+	{
+		length += distance(nodes[path[ii]], nodes[path[ii + 1]]);
+	}
+	length += distance(nodes[path.front()], nodes[path.back()]);
 	return length;
 }
 
