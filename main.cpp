@@ -37,7 +37,7 @@ TSPResult allPermutations(std::vector<Node> nodes)
 	TSPResult result;
 	result.path = std::move(path);
 	result.length = pathLength(path, nodes);
-	return std::move(result);
+	return result;
 }
 
 TSPResult greedy(const std::vector<Node>& nodes)
@@ -62,7 +62,7 @@ TSPResult greedy(const std::vector<Node>& nodes)
 	TSPResult result;
 	result.length = pathLength(path, nodes);
 	result.path = std::move(path);
-	return std::move(result);
+	return result;
 }
 
 TSPResult opt2(std::vector<Node> nodes);

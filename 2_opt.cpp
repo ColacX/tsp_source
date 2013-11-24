@@ -32,5 +32,5 @@ TSPResult opt2(std::vector<Node> nodes)
 	TSPResult result;
 	result.path = getPathVector(nodes);
 	result.length = pathLength(nodes);
-	return std::move(result);
+	return result;
 }
