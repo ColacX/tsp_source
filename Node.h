@@ -23,3 +23,6 @@ int pathLength(const std::vector<int>& path, const std::vector<Node>& nodes);
 std::vector<int> getPathVector(const std::vector<Node>& nodes);
 
 std::vector<Node> randomTest(int testSize);
+
+std::vector<Node> parseTSPLib(std::istream& input);
+std::vector<Node> parseKattisFile(FILE* input);

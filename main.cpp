@@ -3,6 +3,7 @@
 #include <vector>
 #include <stdexcept>
 #include <sstream>
+#include <fstream>
 
 #include "Node.h"
 #ifdef WIN32
@@ -79,21 +80,17 @@ int main(int argc, char* argv[])
 #else
 	FILE* file = stdin;
 #endif
-	size_t numNodes = 0;
-	fscanf(file, "%d", &numNodes);
-	std::vector<Node> nodes(numNodes);
+	std::ifstream f("a280.tsp");
+	std::vector<Node> nodes = parseTSPLib(f);
 
-	for (size_t ii = 0; ii < numNodes; ii++)
-	{
-		fscanf(file, "%f %f", &nodes[ii].x, &nodes[ii].y);
-		nodes[ii].index = ii;
-	}
 	TSPResult result;
-	if (numNodes >= 170)
+	/*
+	if (numNodes <= 11)
 	{
-		result = greedy(nodes);
+		result = allPermutations(nodes);
 	}
 	else
+	*/
 	{
 		result = opt2(nodes);
 	}
