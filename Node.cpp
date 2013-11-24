@@ -1,8 +1,10 @@
 #include "Node.h"
 #include <vector>
+#include <iostream>
+#include <stdexcept>
 #include <cmath>
 #include <stddef.h>
-#include <random>
+#include <stdlib.h>
 #include <string>
 #include <assert.h>
 
@@ -15,7 +17,8 @@ bool less_compare(const Node& l, const Node& r)
 
 int distance(const Node& l, const Node& r)
 {
-	return int(round(std::sqrt(l.x * r.x + l.y * r.y)));
+	double squareDist = (l.x - r.x) * (l.x - r.x) + (l.y - r.y) * (l.y - r.y);
+	return int(round(std::sqrt(squareDist)));
 }
 
 int pathLength(const std::vector<Node>& nodes)

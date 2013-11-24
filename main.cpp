@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <fstream>
+#include <time.h>
 
 #include "Node.h"
 #ifdef WIN32
@@ -77,11 +78,17 @@ int main(int argc, char* argv[])
 		graphic::construct();
 	}
 	FILE* file = fopen("input0.txt", "r+");
+	std::ifstream f("att48.tsp");
 #else
 	FILE* file = stdin;
 #endif
-	std::ifstream f("a280.tsp");
-	std::vector<Node> nodes = parseTSPLib(f);
+	std::vector<Node> nodes = parseKattisFile(file);
+	TSPResult greedyResult = greedy(nodes);
+	std::vector<Node> temp = nodes;
+	for (size_t ii = 0; ii < temp.size(); ii++)
+	{
+		nodes[ii] = temp[greedyResult.path[ii]];
+	}
 
 	TSPResult result;
 	/*
@@ -94,7 +101,6 @@ int main(int argc, char* argv[])
 	{
 		result = opt2(nodes);
 	}
-	TSPResult greedyResult = greedy(nodes);
 	if (greedyResult.length < result.length)
 	{
 		result = greedyResult;
