@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <stdio.h>
+#include <iosfwd>
 
 struct TSPResult
 {
