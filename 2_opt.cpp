@@ -24,9 +24,9 @@ private:
 	const std::vector<Node> nodes;
 };
 
-TSPResult opt2(std::vector<Node> inputNodes, std::vector<int> nodes)
+TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
 {
-	Graph graph(inputNodes);
+	Graph graph(inputpath);
 	clock_t startTime = clock();
 	while (true)
 	{
@@ -36,15 +36,15 @@ TSPResult opt2(std::vector<Node> inputNodes, std::vector<int> nodes)
 		
 		int bestStart = 0, bestEnd = 0;
 		int bestImprovement = 0;
-		for (int ii = 0; ii < int(nodes.size()) - 2; ii++)
+		for (int ii = 0; ii < int(path.size()) - 2; ii++)
 		{
-			for (int jj = ii + 1; jj < int(nodes.size()) - 1; jj++)
+			for (int jj = ii + 1; jj < int(path.size()) - 1; jj++)
 			{
 				//ii is the start of the first sequence, jj the end of it
-				int beginA = nodes[ii];
-				int endA = nodes[jj];
-				int beginB = nodes[jj + 1];
-				int endB = ii == 0 ? nodes.back() : nodes[ii - 1];
+				int beginA = path[ii];
+				int endA = path[jj];
+				int beginB = path[jj + 1];
+				int endB = ii == 0 ? path.back() : path[ii - 1];
 
 				int oldConnection = graph.distance(endB, beginA) + graph.distance(endA, beginB);
 				int newConnection = graph.distance(endB, endA) + graph.distance(beginA, beginB);
@@ -60,7 +60,7 @@ TSPResult opt2(std::vector<Node> inputNodes, std::vector<int> nodes)
 		if (bestImprovement > 0)
 		{
 			//Reverse the sequence since an improvement was found
-			std::reverse(nodes.begin() + bestStart, nodes.begin() + bestEnd + 1);
+			std::reverse(path.begin() + bestStart, path.begin() + bestEnd + 1);
 		}
 		else
 		{
@@ -69,7 +69,7 @@ TSPResult opt2(std::vector<Node> inputNodes, std::vector<int> nodes)
 		}
 	}
 	TSPResult result;
-	result.path = nodes;
-	result.length = graph.pathLength(nodes);
+	result.path = path;
+	result.length = graph.pathLength(path);
 	return result;
 }
