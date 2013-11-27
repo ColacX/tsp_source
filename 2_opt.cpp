@@ -6,13 +6,22 @@
 class Graph
 {
 public:
-	Graph(std::vector<Node> nodes)
-		: nodes(std::move(nodes))
-	{}
+	Graph(std::vector<Node> inputNodes)
+		: nodes(std::move(inputNodes))
+		, distances(nodes.size() * nodes.size())
+	{
+		for (size_t ii = 0; ii < nodes.size(); ii++)
+		{
+			for (size_t jj = 0; jj < nodes.size(); jj++)
+			{
+				distances[ii + jj * nodes.size()] = ::distance(nodes[ii], nodes[jj]);
+			}
+		}
+	}
 
 	int distance(size_t l, size_t r)
 	{
-		return ::distance(nodes[l], nodes[r]);
+		return distances[l + r * nodes.size()];
 	}
 
 	int pathLength(const std::vector<int>& path)
@@ -22,6 +31,7 @@ public:
 
 private:
 	const std::vector<Node> nodes;
+	std::vector<int> distances;
 };
 
 TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
