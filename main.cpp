@@ -23,7 +23,7 @@ TSPResult allPermutations(std::vector<Node> nodes)
 	int permutation = 0;
 	do
 	{
-		int length = pathLength(nodes);
+		int length = pathLength(path, nodes);
 		if (length < minLength)
 		{
 			minLength = length;
@@ -66,7 +66,7 @@ TSPResult greedy(const std::vector<Node>& nodes)
 	return result;
 }
 
-TSPResult opt2(std::vector<Node> nodes);
+TSPResult opt2(std::vector<Node> inputNodes, std::vector<int> nodes);
 
 
 int main(int argc, char* argv[])
@@ -82,13 +82,8 @@ int main(int argc, char* argv[])
 #else
 	FILE* file = stdin;
 #endif
-	std::vector<Node> nodes = parseKattisFile(file);
+	const std::vector<Node> nodes = parseKattisFile(file);
 	TSPResult greedyResult = greedy(nodes);
-	std::vector<Node> temp = nodes;
-	for (size_t ii = 0; ii < temp.size(); ii++)
-	{
-		nodes[ii] = temp[greedyResult.path[ii]];
-	}
 
 	TSPResult result;
 	/*
@@ -99,7 +94,7 @@ int main(int argc, char* argv[])
 	else
 	*/
 	{
-		result = opt2(nodes);
+		result = opt2(nodes, greedyResult.path);
 	}
 	if (greedyResult.length < result.length)
 	{
