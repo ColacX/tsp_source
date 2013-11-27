@@ -54,10 +54,17 @@ namespace graphic
 		}
 	}
 
-	void draw_path(const std::vector<Node>& nodes, const std::vector<int>& shortestPath)
+	bool less_index_compare(const Node& l, const Node& r)
+	{
+		return l.index < r.index;
+	}
+
+	void draw_path(std::vector<Node>& nodes, const std::vector<int>& shortestPath)
 	{
 		if (nodes.empty() || shortestPath.empty())
 			return;
+
+		std::sort(nodes.begin(), nodes.end(), less_index_compare);
 
 		//draw all edges
 		for (size_t ib = 0; ib <= shortestPath.size(); ib++)
@@ -123,7 +130,7 @@ namespace graphic
 		}
 	}
 
-	void run(const std::vector<Node>& nodes, const std::vector<int>& shortestPath)
+	void run(std::vector<Node>& nodes, const std::vector<int>& shortestPath)
 	{
 		bool program_running = true;
 		while (program_running)
