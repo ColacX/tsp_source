@@ -36,8 +36,8 @@ TSPResult allPermutations(std::vector<Node> nodes)
 	} while (std::next_permutation(nodes.begin(), nodes.end(), less_compare));
 
 	TSPResult result;
-	result.path = std::move(path);
 	result.length = pathLength(path, nodes);
+	result.path = std::move(path);
 	return result;
 }
 
@@ -72,7 +72,7 @@ TSPResult opt2(std::vector<Node> inputNodes, std::vector<int> nodes);
 int main(int argc, char* argv[])
 {
 #ifdef WIN32
-	bool showGraphics = false;
+	bool showGraphics = true;
 	if (showGraphics)
 	{
 		graphic::construct();
