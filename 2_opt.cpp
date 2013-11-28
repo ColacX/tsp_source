@@ -58,6 +58,7 @@ TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
 				int beginB = path[jj + 1];
 				int endB = ii == 0 ? path.back() : path[ii - 1];
 
+				int xxx = graph.distance(endB, beginA);
 				int oldConnection = graph.distance(endB, beginA) + graph.distance(endA, beginB);
 				int newConnection = graph.distance(endB, endA) + graph.distance(beginA, beginB);
 				int improvement = oldConnection - newConnection;
@@ -71,8 +72,18 @@ TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
 		}
 		if (bestImprovement > 0)
 		{
+			//fprintf(stderr, "bestStart:%d bestEnd:%d\n", bestStart, bestEnd);
+
+			//for (int ia = 0; ia < path.size(); ia++)
+			//	fprintf(stderr, "%d ", path[ia]);
+			//fprintf(stderr, "\n");
+
 			//Reverse the sequence since an improvement was found
 			std::reverse(path.begin() + bestStart, path.begin() + bestEnd + 1);
+
+			//for (int ia = 0; ia < path.size(); ia++)
+			//	fprintf(stderr, "%d ", path[ia]);
+			//fprintf(stderr, "\n");
 		}
 		else
 		{

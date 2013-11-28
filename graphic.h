@@ -124,7 +124,7 @@ namespace graphic
 		SDL_GL_SwapWindow(sdl_window);
 	}
 
-	void run(const std::vector<Node> nodes, const std::vector<TSPResult> tsp_results)
+	void run(const std::vector<Node> nodes, const std::list<TSPResult> tsp_results)
 	{
 		bool program_running = true;
 		while (program_running)
@@ -143,7 +143,9 @@ namespace graphic
 					{
 						if (ev.key.keysym.sym == SDLK_F1 + ia)
 						{
-							draw_path(nodes, tsp_results[ia].path);
+							auto it = tsp_results.begin();
+							std::advance(it, ia);
+							draw_path(nodes, it->path);
 						}
 					}
 
