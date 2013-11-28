@@ -38,6 +38,7 @@ TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
 {
 	Graph graph(inputpath);
 	clock_t startTime = clock();
+
 	while (true)
 	{
 		double diff = double(clock() - startTime) / CLOCKS_PER_SEC;

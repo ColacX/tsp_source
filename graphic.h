@@ -35,7 +35,7 @@ namespace graphic
 		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-		sdl_window = SDL_CreateWindow("avalg13_project2_tsp", 10, 20, 1000, 1000, SDL_WINDOW_OPENGL);
+		sdl_window = SDL_CreateWindow("avalg13_project2_tsp", 10, 30, 1000, 1000, SDL_WINDOW_OPENGL);
 		sdl_gl_context = SDL_GL_CreateContext(sdl_window);
 
 		SDL_GL_MakeCurrent(sdl_window, sdl_gl_context);
@@ -64,53 +64,37 @@ namespace graphic
 		if (nodes.empty() || shortestPath.empty())
 			return;
 
-		//draw all edges
-		for (size_t ib = 0; ib <= shortestPath.size(); ib++)
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//draw all nodes
+		for (size_t ia = 0; ia < nodes.size(); ia++)
 		{
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			const Node& n = nodes[ia];
+			std::stringstream ss;
+			ss << n.index;
 
-			//draw all nodes
-			for (size_t ia = 0; ia < nodes.size(); ia++)
-			{
-				const Node& n = nodes[ia];
-				std::stringstream ss;
-				ss << n.index;
+			SDL_Surface* sdl_surface = TTF_RenderText_Blended(
+				text_font, //TTF or OTF text font
+				ss.str().c_str(),
+				bgra_color //text rgba_color
+				);
 
-				SDL_Surface* sdl_surface = TTF_RenderText_Blended(
-					text_font, //TTF or OTF text font
-					ss.str().c_str(),
-					bgra_color //text rgba_color
-					);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glPixelZoom(1.0f, -1.0f);
+			glRasterPos2f(n.x * s - 1, n.y * s - 1);
+			glDrawPixels(sdl_surface->w, sdl_surface->h, GL_RGBA, GL_UNSIGNED_BYTE, sdl_surface->pixels);
+			glDisable(GL_BLEND);
+			SDL_FreeSurface(sdl_surface);
+		}
 
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				glPixelZoom(1.0f, -1.0f);
-				glRasterPos2f(n.x * s - 1, n.y * s - 1);
-				glDrawPixels(sdl_surface->w, sdl_surface->h, GL_RGBA, GL_UNSIGNED_BYTE, sdl_surface->pixels);
-				glDisable(GL_BLEND);
-				SDL_FreeSurface(sdl_surface);
-			}
+		//draw all edges
+		const Node& n_start = nodes[shortestPath[0]];
+		const Node* p = &n_start;
 
-			const Node& n_start = nodes[shortestPath[0]];
-			const Node* p = &n_start;
-
-			for (size_t ia = 1; ia < ib; ia++)
-			{
-				const Node& n = nodes[shortestPath[ia]];
-
-				glEnable(GL_COLOR);
-				glBegin(GL_LINES);
-
-				glColor4f(1, 0, 0, 1);
-				glVertex2f(p->x * s - 1, p->y * s - 1);
-
-				glColor4f(0, 1, 0, 1);
-				glVertex2f(n.x * s - 1, n.y * s - 1);
-
-				glEnd();
-
-				p = &n;
-			}
+		for (size_t ia = 1; ia < shortestPath.size(); ia++)
+		{
+			const Node& n = nodes[shortestPath[ia]];
 
 			glEnable(GL_COLOR);
 			glBegin(GL_LINES);
@@ -119,13 +103,25 @@ namespace graphic
 			glVertex2f(p->x * s - 1, p->y * s - 1);
 
 			glColor4f(0, 1, 0, 1);
-			glVertex2f(n_start.x * s - 1, n_start.y * s - 1);
+			glVertex2f(n.x * s - 1, n.y * s - 1);
 
 			glEnd();
 
-			SDL_GL_SwapWindow(sdl_window);
-			SDL_Delay(100);
+			p = &n;
 		}
+
+		glEnable(GL_COLOR);
+		glBegin(GL_LINES);
+
+		glColor4f(0, 0, 1, 1);
+		glVertex2f(p->x * s - 1, p->y * s - 1);
+
+		glColor4f(0, 1, 1, 1);
+		glVertex2f(n_start.x * s - 1, n_start.y * s - 1);
+
+		glEnd();
+
+		SDL_GL_SwapWindow(sdl_window);
 	}
 
 	void run(const std::vector<Node>& nodes, const std::vector<int>& shortestPath)
@@ -149,7 +145,6 @@ namespace graphic
 						exit(0);
 						break;
 					case SDLK_F1:
-						draw_path(nodes, shortestPath);
 						break;
 					default:
 						break;
