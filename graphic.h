@@ -124,7 +124,7 @@ namespace graphic
 		SDL_GL_SwapWindow(sdl_window);
 	}
 
-	void run(const std::vector<Node>& nodes, const std::vector<int>& shortestPath)
+	void run(const std::vector<Node> nodes, const std::vector<TSPResult> tsp_results)
 	{
 		bool program_running = true;
 		while (program_running)
@@ -139,12 +139,18 @@ namespace graphic
 					program_running = false;
 					break;
 				case SDL_KEYDOWN:
+					for (int ia = 0; ia < 12 && ia<tsp_results.size(); ia++)
+					{
+						if (ev.key.keysym.sym == SDLK_F1 + ia)
+						{
+							draw_path(nodes, tsp_results[ia].path);
+						}
+					}
+
 					switch (ev.key.keysym.sym)
 					{
 					case SDLK_ESCAPE:
 						exit(0);
-						break;
-					case SDLK_F1:
 						break;
 					default:
 						break;
