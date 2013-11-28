@@ -35,7 +35,7 @@ namespace graphic
 		SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-		sdl_window = SDL_CreateWindow("avalg13_project2_tsp", 10, 20, 1000, 1000, SDL_WINDOW_OPENGL);
+		sdl_window = SDL_CreateWindow("avalg13_project2_tsp", 10, 30, 1000, 1000, SDL_WINDOW_OPENGL);
 		sdl_gl_context = SDL_GL_CreateContext(sdl_window);
 
 		SDL_GL_MakeCurrent(sdl_window, sdl_gl_context);
@@ -145,7 +145,6 @@ namespace graphic
 						exit(0);
 						break;
 					case SDLK_F1:
-						draw_path(nodes, shortestPath);
 						break;
 					default:
 						break;
