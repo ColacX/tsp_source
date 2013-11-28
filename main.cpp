@@ -16,11 +16,6 @@
 int main(int argc, char* argv[])
 {
 #ifdef WIN32
-	bool showGraphics = true;
-	if (showGraphics)
-	{
-		graphic::construct();
-	}
 	FILE* file = fopen("input0.txt", "r+");
 #else
 	FILE* file = stdin;
@@ -43,15 +38,11 @@ int main(int argc, char* argv[])
 			std::cout << index << " ";
 		}
 		std::cout << std::endl;
-
-		graphic::draw_path(nodes, tsp_result.path);
 	}
 
 #ifdef WIN32
-	if (showGraphics)
-	{
-		graphic::run(nodes, tsp_results);
-	}
+	graphic::construct();
+	graphic::run(nodes, tsp_results);
 	fprintf(stderr, "main: end\n");
 #endif
 	return 0;

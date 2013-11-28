@@ -5,6 +5,7 @@
 
 TSPResult allPermutations(std::vector<Node> nodes)
 {
+	fprintf(stderr, "running allPermutations...\n");
 	const std::vector<Node> originalNodes = nodes;
 	std::vector<int> path(nodes.size());
 	std::sort(nodes.begin(), nodes.end(), less_compare);
@@ -32,6 +33,7 @@ TSPResult allPermutations(std::vector<Node> nodes)
 
 TSPResult greedy(const std::vector<Node>& nodes)
 {
+	fprintf(stderr, "running greedy...\n");
 	std::vector<int> path(nodes.size());
 	std::vector<bool> used(nodes.size());
 	path[0] = 0;

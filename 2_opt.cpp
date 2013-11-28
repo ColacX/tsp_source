@@ -36,6 +36,7 @@ private:
 
 TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
 {
+	fprintf(stderr, "running opt2...\n");
 	Graph graph(inputpath);
 	clock_t startTime = clock();
 
