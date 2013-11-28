@@ -24,7 +24,7 @@ TSPResult allPermutations(std::vector<Node> nodes)
 	int permutation = 0;
 	do
 	{
-		int length = pathLength(path, nodes);
+		int length = pathLength(nodes);
 		if (length < minLength)
 		{
 			minLength = length;
