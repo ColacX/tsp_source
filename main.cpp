@@ -74,7 +74,7 @@ float euclidian_distance(float ax, float ay, float bx, float by)
 {
 	float dx = bx - ax;
 	float dy = by - ay;
-	return sqrtf(dx*dx + dy*dy);
+	return round(sqrtf(dx*dx + dy*dy));
 }
 
 float calculate_cycle_length(const std::vector<Node> nodes, const std::vector<int> path)
@@ -104,27 +104,10 @@ int main(int argc, char* argv[])
 	FILE* file = stdin;
 #endif
 	const std::vector<Node> nodes = parseKattisFile(file);
-	//TSPResult greedyResult = greedy(nodes);
-
-	//TSPResult result;
-	///*
-	//if (numNodes <= 11)
-	//{
-	//	result = allPermutations(nodes);
-	//}
-	//else
-	//*/
-	//{
-	//	result = opt2(nodes, greedyResult.path);
-	//}
-	//if (greedyResult.length < result.length)
-	//{
-	//	result = greedyResult;
-	//}
 
 	TSPResult greedyResult = greedy(nodes);
 	TSPResult result;
-	//result = greedyResult;
+
 	result = opt2(nodes, greedyResult.path);
 	result = allPermutations(nodes);
 	float cycle_length = calculate_cycle_length(nodes, result.path);
