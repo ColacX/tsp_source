@@ -17,6 +17,7 @@
 
 TSPResult allPermutations(std::vector<Node> nodes)
 {
+	const std::vector<Node> originalNodes = nodes;
 	std::vector<int> path(nodes.size());
 	std::sort(nodes.begin(), nodes.end(), less_compare);
 	int minLength = std::numeric_limits<int>::max();
@@ -36,7 +37,7 @@ TSPResult allPermutations(std::vector<Node> nodes)
 	} while (std::next_permutation(nodes.begin(), nodes.end(), less_compare));
 
 	TSPResult result;
-	result.length = pathLength(path, nodes);
+	result.length = pathLength(path, originalNodes);
 	result.path = std::move(path);
 	return result;
 }
