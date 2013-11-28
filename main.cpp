@@ -60,7 +60,7 @@ void benchmark_stop(const std::vector<Node> nodes, TSPResult& tsp_result)
 std::vector<Node> random_nodes()
 {
 	srand(1337);
-	std::vector<Node> nodes(1024);
+	std::vector<Node> nodes(1000);
 
 	for (int ia = 0; ia < nodes.size(); ia++)
 	{
