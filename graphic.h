@@ -21,7 +21,7 @@ namespace graphic
 	SDL_Window* sdl_window;
 	SDL_GLContext sdl_gl_context;
 	TTF_Font* text_font;
-	float s = 0.01f;
+	float s = 0.02f;
 	SDL_Color bgra_color = { 0xff, 0xff, 0xff, 0x00 };
 
 	void construct()

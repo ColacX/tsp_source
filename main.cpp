@@ -60,7 +60,7 @@ void benchmark_stop(const std::vector<Node> nodes, TSPResult& tsp_result)
 std::vector<Node> random_nodes()
 {
 	srand(1337);
-	std::vector<Node> nodes(1000);
+	std::vector<Node> nodes(500);
 
 	for (int ia = 0; ia < nodes.size(); ia++)
 	{
@@ -91,9 +91,9 @@ int main(int argc, char* argv[])
 	tsp_results.push_back(tsp_opt2::run(nodes, greedyResult.path));
 	benchmark_stop(nodes, tsp_results.back());
 
-	//benchmark_start();
-	//tsp_results.push_back(opt2(nodes, greedyResult.path));
-	//benchmark_stop(nodes, tsp_results.back());
+	benchmark_start();
+	tsp_results.push_back(opt2(nodes, greedyResult.path));
+	benchmark_stop(nodes, tsp_results.back());
 
 	//benchmark_start();
 	//tsp_results.push_back(allPermutations(nodes));
