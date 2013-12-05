@@ -16,6 +16,7 @@
 
 #include "library.h"
 #include "tsp_opt2.h"
+#include "tsp_greedy.h"
 
 double start_time;
 
@@ -60,7 +61,7 @@ void benchmark_stop(const std::vector<Node> nodes, TSPResult& tsp_result)
 std::vector<Node> random_nodes()
 {
 	srand(1337);
-	std::vector<Node> nodes(500);
+	std::vector<Node> nodes(1000);
 
 	for (int ia = 0; ia < nodes.size(); ia++)
 	{
@@ -87,17 +88,21 @@ int main(int argc, char* argv[])
 	benchmark_stop(nodes, tsp_results.back());
 	const TSPResult& greedyResult = tsp_results.back();
 
-	benchmark_start();
-	tsp_results.push_back(tsp_opt2::run(nodes, greedyResult.path));
-	benchmark_stop(nodes, tsp_results.back());
+	//benchmark_start();
+	//tsp_results.push_back(tsp_opt2::run(nodes, greedyResult.path));
+	//benchmark_stop(nodes, tsp_results.back());
 
-	benchmark_start();
-	tsp_results.push_back(opt2(nodes, greedyResult.path));
-	benchmark_stop(nodes, tsp_results.back());
+	//benchmark_start();
+	//tsp_results.push_back(opt2(nodes, greedyResult.path));
+	//benchmark_stop(nodes, tsp_results.back());
 
 	//benchmark_start();
 	//tsp_results.push_back(allPermutations(nodes));
 	//benchmark_stop(nodes, tsp_results.back());
+
+	benchmark_start();
+	tsp_results.push_back(tsp_greedy::run(nodes));
+	benchmark_stop(nodes, tsp_results.back());
 
 	graphic::construct();
 	graphic::run(nodes, tsp_results);
