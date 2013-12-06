@@ -65,85 +65,91 @@ namespace tsp_approx_greedy_opt2
 		float best_length = std::numeric_limits<float>::max();
 		std::vector<int> best_path;
 
-		for (int ia = 0; ia < 1; ia++)
+		for (int ia = 0; ia < 10000; ia++)
 		{
-			//greedy part
-			std::vector<int> path(node_count);
-			//std::vector<bool> used(node_count);
-
-			////start the path at a random node
-			//int start = rand() % node_count;
-			//path[0] = start;
-			//used[start] = true;
-
-			////for rest of path
-			//for (int ii = 1; ii < node_count; ii++)
-			//{
-			//	{
-			//		int cells_x = (int)(nodes[ii - 1].x * tweak);
-			//		int cells_y = (int)(nodes[ii - 1].y * tweak);
-
-			//		std::vector<int>& cell = cells[cells_x][cells_y];
-			//		//printf("cells: %d %d %d\n", cells_x, cells_y, cell.size());
-
-			//		for (int ib = 0; ib < cell.size(); ib++)
-			//		{
-			//			int node_index = cell[ib];
-
-			//			if (!used[node_index])
-			//			{
-			//				//grab the first available in the same cell, this is an approximation
-			//				used[node_index] = true;
-			//				path[ii] = node_index;
-			//				goto continue_building_path;
-			//			}
-			//		}
-			//	}
-
-			//	{
-			//		//otherwize default to searching for the best
-			//		float best_distance = std::numeric_limits<float>::max();
-			//		int best_node = -1;
-
-			//		//for each node
-			//		for (int jj = 0; jj < node_count; jj++)
-			//		{
-			//			if (!used[jj] && q_distance[path[0]][jj] < best_distance)
-			//			{
-			//				best_distance = q_distance[path[0]][jj];
-			//				best_node = jj;
-			//				//fprintf(stderr, "distance: %f\n", distance);
-			//			}
-			//		}
-
-			//		//fprintf(stderr, "best_distance: %f\n", best_distance);
-			//		path[ii] = best_node;
-			//		used[best_node] = true;
-			//	}
-
-			//	continue_building_path:;
-			//}
-
-			float length;
-			//length = quick_length(path);
-			//fprintf(stderr, "greedy quick length: %f\n", length);
-
-			for (int ib = 0; ib < node_count; ib++)
+			if (1.90 < ((double)clock() - start_time) / CLOCKS_PER_SEC)
 			{
-				path[ib] = ib;
+				fprintf(stderr, "time limit reached\n");
+				break;
 			}
 
+			//greedy part
+			std::vector<int> path(node_count);
+			std::vector<bool> used(node_count);
+
+			//start the path at a random node
+			int start = rand() % node_count;
+			path[0] = start;
+			used[start] = true;
+
+			//for rest of path
+			for (int ii = 1; ii < node_count; ii++)
 			{
-				const int randomize_max = 10;
+				//{
+				//	int cells_x = (int)(nodes[ii - 1].x * tweak);
+				//	int cells_y = (int)(nodes[ii - 1].y * tweak);
+
+				//	std::vector<int>& cell = cells[cells_x][cells_y];
+				//	//printf("cells: %d %d %d\n", cells_x, cells_y, cell.size());
+
+				//	for (int ib = 0; ib < cell.size(); ib++)
+				//	{
+				//		int node_index = cell[ib];
+
+				//		if (!used[node_index])
+				//		{
+				//			//grab the first available in the same cell, this is an approximation
+				//			used[node_index] = true;
+				//			path[ii] = node_index;
+				//			goto continue_building_path;
+				//		}
+				//	}
+				//}
+
+				{
+					//otherwize default to searching for the best
+					float best_distance = std::numeric_limits<float>::max();
+					int best_node = -1;
+
+					//for each node
+					for (int jj = 0; jj < node_count; jj++)
+					{
+						if (!used[jj] && q_distance[path[0]][jj] < best_distance)
+						{
+							best_distance = q_distance[path[0]][jj];
+							best_node = jj;
+							//fprintf(stderr, "distance: %f\n", distance);
+						}
+					}
+
+					//fprintf(stderr, "best_distance: %f\n", best_distance);
+					path[ii] = best_node;
+					used[best_node] = true;
+				}
+
+				continue_building_path:;
+			}
+
+			float length;
+			length = quick_length(path);
+			fprintf(stderr, "greedy quick length: %f\n", length);
+
+			////just pick the first node available
+			//for (int ib = 0; ib < node_count; ib++)
+			//{
+			//	path[ib] = ib;
+			//}
+
+			{
+				const int randomize_max = 1;
 				for (int ia = 0; ia < randomize_max; ia++)
 				{
 					//opt2 part
 					while (true)
 					{
-						double elapsed_time = ((double)clock() - start_time) / CLOCKS_PER_SEC;
-						if (elapsed_time > 1.90 / randomize_max * (ia + 1))
+						if (1.90 < ((double)clock() - start_time) / CLOCKS_PER_SEC)
 						{
-							fprintf(stderr, "break time: %lf\n", elapsed_time);
+							fprintf(stderr, "time limit reached\n");
 							break;
 						}
 
