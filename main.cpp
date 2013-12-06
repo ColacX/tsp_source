@@ -6,6 +6,7 @@
 #include <fstream>
 #include <time.h>
 #include <list>
+#include <unordered_map>
 
 #include "Node.h"
 #ifdef WIN32
@@ -16,7 +17,7 @@
 
 #include "library.h"
 #include "tsp_opt2.h"
-#include "tsp_greedy.h"
+#include "tsp_approx_greedy_opt2.h"
 
 double start_time;
 
@@ -68,7 +69,7 @@ std::vector<Node> random_nodes()
 		nodes[ia].x = 100.0f * (float)rand() / RAND_MAX;
 		nodes[ia].y = 100.0f * (float)rand() / RAND_MAX;
 		nodes[ia].index = ia;
-		fprintf(stderr, "%d %f %f\n", ia, nodes[ia].x, nodes[ia].y);
+		//fprintf(stderr, "%d %f %f\n", ia, nodes[ia].x, nodes[ia].y);
 	}
 
 	return nodes;
@@ -88,20 +89,20 @@ int main(int argc, char* argv[])
 	benchmark_stop(nodes, tsp_results.back());
 	const TSPResult& greedyResult = tsp_results.back();
 
-	//benchmark_start();
-	//tsp_results.push_back(tsp_opt2::run(nodes, greedyResult.path));
-	//benchmark_stop(nodes, tsp_results.back());
+	benchmark_start();
+	tsp_results.push_back(tsp_opt2::run(nodes, greedyResult.path));
+	benchmark_stop(nodes, tsp_results.back());
 
-	//benchmark_start();
-	//tsp_results.push_back(opt2(nodes, greedyResult.path));
-	//benchmark_stop(nodes, tsp_results.back());
+	benchmark_start();
+	tsp_results.push_back(opt2(nodes, greedyResult.path));
+	benchmark_stop(nodes, tsp_results.back());
 
 	//benchmark_start();
 	//tsp_results.push_back(allPermutations(nodes));
 	//benchmark_stop(nodes, tsp_results.back());
 
 	benchmark_start();
-	tsp_results.push_back(tsp_greedy::run(nodes));
+	tsp_results.push_back(tsp_approx_greedy_opt2::run(nodes));
 	benchmark_stop(nodes, tsp_results.back());
 
 	graphic::construct();
@@ -111,8 +112,11 @@ int main(int argc, char* argv[])
 	//FILE* file = fopen("input0.txt", "r+");
 	FILE* file = stdin;
 	const std::vector<Node> nodes = parseKattisFile(file);
+	
 	TSPResult greedyResult = greedy(nodes);
 	TSPResult tsp_result = tsp_opt2::run(nodes, greedyResult.path);
+
+	//TSPResult tsp_result = tsp_approx_greedy_opt2::run(nodes);
 
 	for (int index : tsp_result.path)
 		std::cout << index << "\n";

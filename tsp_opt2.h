@@ -40,7 +40,7 @@ namespace tsp_opt2
 			}
 		}
 
-		const double randomize_max = 3;
+		const double randomize_max = 1;
 		float best_length = std::numeric_limits<float>::max();
 		std::vector<int> best_path;
 
@@ -77,20 +77,22 @@ namespace tsp_opt2
 							bestStart = ii;
 							bestEnd = jj;
 							bestImprovement = improvement;
+
+							//Reverse the sequence since an improvement was found
+							for (int ia = 0; ia < (bestEnd - bestStart + 1) / 2; ia++)
+							{
+								//swap
+								int temp = path_indices[bestStart + ia];
+								path_indices[bestStart + ia] = path_indices[bestEnd - ia];
+								path_indices[bestEnd - ia] = temp;
+							}
 						}
 					}
 				}
 
 				if (bestImprovement > 0)
 				{
-					//Reverse the sequence since an improvement was found
-					for (int ia = 0; ia < (bestEnd - bestStart + 1) / 2; ia++)
-					{
-						//swap
-						int temp = path_indices[bestStart + ia];
-						path_indices[bestStart + ia] = path_indices[bestEnd - ia];
-						path_indices[bestEnd - ia] = temp;
-					}
+					
 				}
 				else
 				{
