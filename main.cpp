@@ -53,8 +53,8 @@ void benchmark_stop(const std::vector<Node> nodes, TSPResult& tsp_result)
 	float cycle_length = calculate_cycle_length(nodes, tsp_result.path);
 	printf("cycle_length %f\n", cycle_length);
 	std::cerr << "Length:" << tsp_result.length << std::endl;
-	for (int index : tsp_result.path)
-		std::cout << index << " ";
+	//for (int index : tsp_result.path)
+	//	std::cout << index << " ";
 
 	std::cout << std::endl << std::endl;
 }
@@ -113,10 +113,10 @@ int main(int argc, char* argv[])
 	FILE* file = stdin;
 	const std::vector<Node> nodes = parseKattisFile(file);
 	
-	TSPResult greedyResult = greedy(nodes);
-	TSPResult tsp_result = tsp_opt2::run(nodes, greedyResult.path);
+	//TSPResult greedyResult = greedy(nodes);
+	//TSPResult tsp_result = tsp_opt2::run(nodes, greedyResult.path);
 
-	//TSPResult tsp_result = tsp_approx_greedy_opt2::run(nodes);
+	TSPResult tsp_result = tsp_approx_greedy_opt2::run(nodes);
 
 	for (int index : tsp_result.path)
 		std::cout << index << "\n";
