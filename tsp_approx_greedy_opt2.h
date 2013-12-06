@@ -65,9 +65,9 @@ namespace tsp_approx_greedy_opt2
 		float best_length = std::numeric_limits<float>::max();
 		std::vector<int> best_path;
 
-		for (int ia = 0; ia < 10000; ia++)
+		while (true)
 		{
-			if (1.90 < ((double)clock() - start_time) / CLOCKS_PER_SEC)
+			if (1.80 < ((double)clock() - start_time) / CLOCKS_PER_SEC)
 			{
 				fprintf(stderr, "time limit reached\n");
 				break;
@@ -75,140 +75,137 @@ namespace tsp_approx_greedy_opt2
 
 			//greedy part
 			std::vector<int> path(node_count);
-			std::vector<bool> used(node_count);
+			//std::vector<bool> used(node_count);
 
-			//start the path at a random node
-			int start = rand() % node_count;
-			path[0] = start;
-			used[start] = true;
+			////start the path at a random node
+			//int start = rand() % node_count;
+			//path[0] = start;
+			//used[start] = true;
 
-			//for rest of path
-			for (int ii = 1; ii < node_count; ii++)
+			////for rest of path
+			//for (int ii = 1; ii < node_count; ii++)
+			//{
+			//	//{
+			//	//	int cells_x = (int)(nodes[ii - 1].x * tweak);
+			//	//	int cells_y = (int)(nodes[ii - 1].y * tweak);
+
+			//	//	std::vector<int>& cell = cells[cells_x][cells_y];
+			//	//	//printf("cells: %d %d %d\n", cells_x, cells_y, cell.size());
+
+			//	//	for (int ib = 0; ib < cell.size(); ib++)
+			//	//	{
+			//	//		int node_index = cell[ib];
+
+			//	//		if (!used[node_index])
+			//	//		{
+			//	//			//grab the first available in the same cell, this is an approximation
+			//	//			used[node_index] = true;
+			//	//			path[ii] = node_index;
+			//	//			goto continue_building_path;
+			//	//		}
+			//	//	}
+			//	//}
+
+			//	{
+			//		//otherwize default to searching for the best
+			//		float best_distance = std::numeric_limits<float>::max();
+			//		int best_node = -1;
+
+			//		//for each node
+			//		for (int jj = 0; jj < node_count; jj++)
+			//		{
+			//			if (!used[jj] && q_distance[path[0]][jj] < best_distance)
+			//			{
+			//				best_distance = q_distance[path[0]][jj];
+			//				best_node = jj;
+			//				//fprintf(stderr, "distance: %f\n", distance);
+			//			}
+			//		}
+
+			//		//fprintf(stderr, "best_distance: %f\n", best_distance);
+			//		path[ii] = best_node;
+			//		used[best_node] = true;
+			//	}
+
+			//	continue_building_path:;
+			//}
+
+			for (int ib = 0; ib < node_count; ib++)
 			{
-				//{
-				//	int cells_x = (int)(nodes[ii - 1].x * tweak);
-				//	int cells_y = (int)(nodes[ii - 1].y * tweak);
-
-				//	std::vector<int>& cell = cells[cells_x][cells_y];
-				//	//printf("cells: %d %d %d\n", cells_x, cells_y, cell.size());
-
-				//	for (int ib = 0; ib < cell.size(); ib++)
-				//	{
-				//		int node_index = cell[ib];
-
-				//		if (!used[node_index])
-				//		{
-				//			//grab the first available in the same cell, this is an approximation
-				//			used[node_index] = true;
-				//			path[ii] = node_index;
-				//			goto continue_building_path;
-				//		}
-				//	}
-				//}
-
-				{
-					//otherwize default to searching for the best
-					float best_distance = std::numeric_limits<float>::max();
-					int best_node = -1;
-
-					//for each node
-					for (int jj = 0; jj < node_count; jj++)
-					{
-						if (!used[jj] && q_distance[path[0]][jj] < best_distance)
-						{
-							best_distance = q_distance[path[0]][jj];
-							best_node = jj;
-							//fprintf(stderr, "distance: %f\n", distance);
-						}
-					}
-
-					//fprintf(stderr, "best_distance: %f\n", best_distance);
-					path[ii] = best_node;
-					used[best_node] = true;
-				}
-
-				continue_building_path:;
+				path[ib] = ib;
 			}
+
+			std::random_shuffle(path.begin(), path.end());
+
+			////randomize some parts of the path
+			//for (int ib = 0; ib < node_count; ib++)
+			//{
+			//	std::swap(path[std::rand() % node_count], path[std::rand() % node_count]);
+			//}
 
 			float length;
 			length = quick_length(path);
-			fprintf(stderr, "greedy quick length: %f\n", length);
-
-			////just pick the first node available
-			//for (int ib = 0; ib < node_count; ib++)
-			//{
-			//	path[ib] = ib;
-			//}
+			//fprintf(stderr, "greedy quick length: %f\n", length);
 
 			{
-				const int randomize_max = 1;
-				for (int ia = 0; ia < randomize_max; ia++)
+				//opt2 part
+				while (true)
 				{
-					//opt2 part
-					while (true)
+					if (1.80 < ((double)clock() - start_time) / CLOCKS_PER_SEC)
 					{
-						if (1.90 < ((double)clock() - start_time) / CLOCKS_PER_SEC)
-						{
-							fprintf(stderr, "time limit reached\n");
-							break;
-						}
+						fprintf(stderr, "time limit reached\n");
+						break;
+					}
 
-						int bestStart = 0, bestEnd = 0;
-						float bestImprovement = 0;
+					int bestStart = 0, bestEnd = 0;
+					float bestImprovement = 0;
 
-						for (int ii = 0; ii < node_count - 2; ii++)
+					for (int ii = 0; ii < node_count - 2; ii++)
+					{
+						for (int jj = ii + 1; jj < node_count - 1; jj++)
 						{
-							for (int jj = ii + 1; jj < node_count - 1; jj++)
+							//ii is the start of the first sequence, jj the end of it
+							int beginA = path[ii];
+							int endA = path[jj];
+							int beginB = path[jj + 1];
+							int endB = ii == 0 ? path[node_count - 1] : path[ii - 1];
+
+							float oldConnection = q_distance[endB][beginA] + q_distance[endA][beginB];
+							float newConnection = q_distance[endB][endA] + q_distance[beginA][beginB];
+							float improvement = oldConnection - newConnection;
+
+							if (improvement > 0)
 							{
-								//ii is the start of the first sequence, jj the end of it
-								int beginA = path[ii];
-								int endA = path[jj];
-								int beginB = path[jj + 1];
-								int endB = ii == 0 ? path[node_count - 1] : path[ii - 1];
+								bestStart = ii;
+								bestEnd = jj;
+								bestImprovement = improvement;
 
-								float oldConnection = q_distance[endB][beginA] + q_distance[endA][beginB];
-								float newConnection = q_distance[endB][endA] + q_distance[beginA][beginB];
-								float improvement = oldConnection - newConnection;
-
-								if (improvement > 0)
+								//Reverse the sequence since an improvement was found
+								for (int ia = 0; ia < (bestEnd - bestStart + 1) / 2; ia++)
 								{
-									bestStart = ii;
-									bestEnd = jj;
-									bestImprovement = improvement;
-
-									//Reverse the sequence since an improvement was found
-									for (int ia = 0; ia < (bestEnd - bestStart + 1) / 2; ia++)
-									{
-										//swap
-										int temp = path[bestStart + ia];
-										path[bestStart + ia] = path[bestEnd - ia];
-										path[bestEnd - ia] = temp;
-									}
+									//swap
+									int temp = path[bestStart + ia];
+									path[bestStart + ia] = path[bestEnd - ia];
+									path[bestEnd - ia] = temp;
 								}
 							}
 						}
-
-						if (bestImprovement == 0)
-						{
-							//No improvement was found
-							break;
-						}
 					}
 
-					length = quick_length(path);
-					fprintf(stderr, "opt2 quick length: %f\n", length);
-
-					if (length < best_length)
+					if (bestImprovement == 0)
 					{
-						best_length = length;
-						best_path = path;
+						//No improvement was found
+						break;
 					}
+				}
 
-					//randomize some parts of the path
-					for (int ib = 0; ib < 10; ib++)
-					{
-						std::swap(path[std::rand() % node_count], path[std::rand() % node_count]);
-					}
+				length = quick_length(path);
+				fprintf(stderr, "opt2 quick length: %f\n", length);
+
+				if (length < best_length)
+				{
+					best_length = length;
+					best_path = path;
 				}
 			}
 		}
