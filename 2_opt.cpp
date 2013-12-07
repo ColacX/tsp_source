@@ -80,7 +80,7 @@ TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
 			//Reverse the sequence since an improvement was found
 			std::reverse(path.begin() + bestStart, path.begin() + bestEnd + 1);
 
-#ifdef WIN32
+#ifdef USE_GRAPHICS
 			graphic::draw_path(graph.nodes, path);
 #endif
 		}
@@ -142,7 +142,7 @@ void testUpdate(const Graph& graph, bool& improvementFound, int& currentDistance
 		improvementFound = true;
 		currentDistance = newDistance;
 		updatePath(temp, path, a1, a2, b1, b2, c1, c2);
-#ifdef WIN32
+#ifdef USE_GRAPHICS
 		graphic::draw_path(graph.nodes, path);
 #endif
 	}

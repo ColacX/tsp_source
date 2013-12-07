@@ -3,7 +3,10 @@
 #include <list>
 #include "Node.h"
 
+
 #ifdef WIN32
+#define USE_GRAPHICS 1
+
 #include <Windows.h>
 #undef min
 #undef max
