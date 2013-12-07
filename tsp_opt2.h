@@ -121,7 +121,7 @@ namespace tsp_opt2
 		tsp_result.path.resize(node_count);
 		for (int ia = 0; ia < node_count; ia++)
 			tsp_result.path[ia] = best_path[ia];
-		tsp_result.length = best_length;
+		tsp_result.length = int(best_length);
 
 		double elapsed_time = ((double)clock() - start_time) / CLOCKS_PER_SEC;
 		fprintf(stderr, "final time: %lf\n", elapsed_time);

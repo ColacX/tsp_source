@@ -64,14 +64,14 @@ float euclidian_distance(float ax, float ay, float bx, float by)
 {
 	float dx = bx - ax;
 	float dy = by - ay;
-	return round(sqrtf(dx*dx + dy*dy));
+	return float(round(sqrtf(dx*dx + dy*dy)));
 }
 
 float calculate_cycle_length(const std::vector<Node> nodes, const std::vector<int> path)
 {
 	float cycle_distance = 0.0f;
 
-	for (int ia = 0; ia < path.size() - 1; ia++)
+	for (size_t ia = 0; ia < path.size() - 1; ia++)
 	{
 		cycle_distance += euclidian_distance(nodes[path[ia]].x, nodes[path[ia]].y, nodes[path[ia + 1]].x, nodes[path[ia + 1]].y);
 	}

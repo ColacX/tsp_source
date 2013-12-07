@@ -126,7 +126,7 @@ void run(const std::vector<Node> nodes, const std::list<TSPResult> tsp_results)
 				program_running = false;
 				break;
 			case SDL_KEYDOWN:
-				for (int ia = 0; ia < 12 && ia < tsp_results.size(); ia++)
+				for (size_t ia = 0; ia < 12 && ia < tsp_results.size(); ia++)
 				{
 					if (ev.key.keysym.sym == SDLK_F1 + ia)
 					{

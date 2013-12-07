@@ -18,7 +18,7 @@ namespace tsp_approx_greedy_opt2
 	{
 		float length = 0;
 		
-		for (int ia = 0; ia < path.size() - 1; ia++)
+		for (size_t ia = 0; ia < path.size() - 1; ia++)
 		{
 			length += q_distance[path[ia]][path[ia+1]];
 		}
@@ -211,7 +211,7 @@ namespace tsp_approx_greedy_opt2
 		}
 
 		TSPResult tsp_result;
-		tsp_result.length = best_length;
+		tsp_result.length = int(best_length);
 		tsp_result.path = best_path;
 
 		double elapsed_time = ((double)clock() - start_time) / CLOCKS_PER_SEC;

@@ -25,10 +25,10 @@ void assert_cycle(const std::vector<Node> nodes, TSPResult& tsp_result)
 {
 	std::vector<bool> visited(nodes.size());
 
-	for (int ia = 0; ia < tsp_result.path.size(); ia++)
+	for (size_t ia = 0; ia < tsp_result.path.size(); ia++)
 		visited[tsp_result.path[ia]] = true;
 
-	for (int ia = 0; ia < visited.size(); ia++)
+	for (size_t ia = 0; ia < visited.size(); ia++)
 	{
 		if (!visited[ia])
 		{
@@ -64,7 +64,7 @@ std::vector<Node> random_nodes()
 	srand(1337);
 	std::vector<Node> nodes(1000);
 
-	for (int ia = 0; ia < nodes.size(); ia++)
+	for (size_t ia = 0; ia < nodes.size(); ia++)
 	{
 		nodes[ia].x = 100.0f * (float)rand() / RAND_MAX;
 		nodes[ia].y = 100.0f * (float)rand() / RAND_MAX;
