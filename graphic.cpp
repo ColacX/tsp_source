@@ -1,3 +1,5 @@
+#include <stdexcept>
+#include <sstream>
 #include "graphic.h"
 
 namespace graphic
@@ -8,7 +10,6 @@ SDL_GLContext sdl_gl_context;
 TTF_Font* text_font;
 float s = 0.01f;
 SDL_Color bgra_color = { 0xff, 0xff, 0xff, 0x00 };
-
 void construct()
 {
 	if (SDL_Init(SDL_INIT_EVENTS) != 0)
@@ -39,6 +40,11 @@ void construct()
 	}
 }
 
+bool less_index_compare(const Node& l, const Node& r)
+{
+	return l.index < r.index;
+}
+
 void draw_path(const std::vector<Node>& nodes, const std::vector<int>& shortestPath)
 {
 	if (nodes.empty() || shortestPath.empty())
@@ -58,6 +64,7 @@ void draw_path(const std::vector<Node>& nodes, const std::vector<int>& shortestP
 			ss.str().c_str(),
 			bgra_color //text rgba_color
 			);
+
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -104,7 +111,7 @@ void draw_path(const std::vector<Node>& nodes, const std::vector<int>& shortestP
 	SDL_GL_SwapWindow(sdl_window);
 }
 
-void run(const std::vector<Node>& nodes, const std::vector<int>& shortestPath)
+void run(const std::vector<Node> nodes, const std::list<TSPResult> tsp_results)
 {
 	bool program_running = true;
 	while (program_running)
@@ -119,12 +126,20 @@ void run(const std::vector<Node>& nodes, const std::vector<int>& shortestPath)
 				program_running = false;
 				break;
 			case SDL_KEYDOWN:
+				for (int ia = 0; ia < 12 && ia < tsp_results.size(); ia++)
+				{
+					if (ev.key.keysym.sym == SDLK_F1 + ia)
+					{
+						auto it = tsp_results.begin();
+						std::advance(it, ia);
+						draw_path(nodes, it->path);
+					}
+				}
+
 				switch (ev.key.keysym.sym)
 				{
 				case SDLK_ESCAPE:
 					exit(0);
-					break;
-				case SDLK_F1:
 					break;
 				default:
 					break;

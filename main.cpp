@@ -78,6 +78,7 @@ std::vector<Node> random_nodes()
 int main(int argc, char* argv[])
 {
 #ifdef WIN32
+	graphic::construct();
 	FILE* file = fopen("input0.txt", "r+");
 
 	//const std::vector<Node> nodes = parseKattisFile(file);
@@ -105,7 +106,6 @@ int main(int argc, char* argv[])
 	tsp_results.push_back(tsp_approx_greedy_opt2::run(nodes));
 	benchmark_stop(nodes, tsp_results.back());
 
-	graphic::construct();
 	graphic::run(nodes, tsp_results);
 	fprintf(stderr, "main: end\n");
 #else
