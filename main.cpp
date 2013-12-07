@@ -5,126 +5,121 @@
 #include <sstream>
 #include <fstream>
 #include <time.h>
+#include <list>
+#include <unordered_map>
 
 #include "Node.h"
 #ifdef WIN32
 #include "graphic.h"
+#else
+#define __debugbreak() //NOP
 #endif
 
+#include "library.h"
+#include "tsp_opt2.h"
+#include "tsp_approx_greedy_opt2.h"
 
-#define round(x) int((x) + 0.5f)
+double start_time;
 
-
-TSPResult allPermutations(std::vector<Node> nodes)
+void assert_cycle(const std::vector<Node> nodes, TSPResult& tsp_result)
 {
-	const std::vector<Node> originalNodes = nodes;
-	std::vector<int> path(nodes.size());
-	std::sort(nodes.begin(), nodes.end(), less_compare);
-	int minLength = std::numeric_limits<int>::max();
-	int permutation = 0;
-	do
+	std::vector<bool> visited(nodes.size());
+
+	for (int ia = 0; ia < tsp_result.path.size(); ia++)
+		visited[tsp_result.path[ia]] = true;
+
+	for (int ia = 0; ia < visited.size(); ia++)
 	{
-		int length = pathLength(nodes);
-		if (length < minLength)
+		if (!visited[ia])
 		{
-			minLength = length;
-			for (size_t ii = 0; ii < nodes.size(); ii++)
-			{
-				path[ii] = nodes[ii].index;
-			}
+			__debugbreak();
+			throw "not a cycle";
 		}
-		permutation++;
-	} while (std::next_permutation(nodes.begin(), nodes.end(), less_compare));
-
-	TSPResult result;
-	result.length = pathLength(path, originalNodes);
-	result.path = std::move(path);
-	return result;
-}
-
-TSPResult greedy(const std::vector<Node>& nodes)
-{
-	std::vector<int> path(nodes.size());
-	std::vector<bool> used(nodes.size());
-	path[0] = 0;
-	used[0] = true;
-	for (size_t ii = 1; ii < nodes.size(); ii++)
-	{
-		int best = -1;
-		for (int jj = 0; jj < int(nodes.size()); jj++)
-		{
-			const Node& current = nodes[path[ii]];
-			if (!used[jj] && (best == -1 || distance(current, nodes[jj]) < distance(current, nodes[best])))
-				best = jj;
-		}
-
-		path[ii] = best;
-		used[best] = true;
 	}
-	TSPResult result;
-	result.length = pathLength(path, nodes);
-	result.path = std::move(path);
-	return result;
 }
 
-TSPResult opt2(std::vector<Node> inputNodes, std::vector<int> nodes);
-TSPResult opt3(std::vector<Node> inputNodes, std::vector<int> nodes);
-
-
-float euclidian_distance(float ax, float ay, float bx, float by)
+void benchmark_start()
 {
-	float dx = bx - ax;
-	float dy = by - ay;
-	return round(sqrtf(dx*dx + dy*dy));
+	start_time = clock();
 }
 
-float calculate_cycle_length(const std::vector<Node> nodes, const std::vector<int> path)
+void benchmark_stop(const std::vector<Node> nodes, TSPResult& tsp_result)
 {
-	float cycle_distance = 0.0f;
+	double elapsed_time = ((double)clock() - start_time) / CLOCKS_PER_SEC;
+	fprintf(stderr, "elapsed_time: %lf\n", elapsed_time);
 
-	for (int ia = 0; ia < path.size() - 1; ia++)
+	assert_cycle(nodes, tsp_result);
+
+	float cycle_length = calculate_cycle_length(nodes, tsp_result.path);
+	printf("cycle_length %f\n", cycle_length);
+	std::cerr << "Length:" << tsp_result.length << std::endl;
+	//for (int index : tsp_result.path)
+	//	std::cout << index << " ";
+
+	std::cout << std::endl << std::endl;
+}
+
+std::vector<Node> random_nodes()
+{
+	srand(1337);
+	std::vector<Node> nodes(1000);
+
+	for (int ia = 0; ia < nodes.size(); ia++)
 	{
-		cycle_distance += euclidian_distance(nodes[path[ia]].x, nodes[path[ia]].y, nodes[path[ia+1]].x, nodes[path[ia+1]].y);
+		nodes[ia].x = 100.0f * (float)rand() / RAND_MAX;
+		nodes[ia].y = 100.0f * (float)rand() / RAND_MAX;
+		nodes[ia].index = ia;
+		//fprintf(stderr, "%d %f %f\n", ia, nodes[ia].x, nodes[ia].y);
 	}
 
-	cycle_distance += euclidian_distance(nodes[path[path.size()-1]].x, nodes[path[path.size()-1]].y, nodes[path[0]].x, nodes[path[0]].y);
-	return cycle_distance;
+	return nodes;
 }
 
 int main(int argc, char* argv[])
 {
 #ifdef WIN32
-	bool showGraphics = true;
-	if (showGraphics)
-	{
-		graphic::construct();
-	}
 	FILE* file = fopen("input0.txt", "r+");
-	std::ifstream f("att48.tsp");
-#else
-	FILE* file = stdin;
-#endif
-	const std::vector<Node> nodes = parseKattisFile(file);
 
-	TSPResult greedyResult = greedy(nodes);
-	TSPResult result;
+	//const std::vector<Node> nodes = parseKattisFile(file);
+	const std::vector<Node> nodes = random_nodes();
+	std::list<TSPResult> tsp_results;
 
-	result = opt2(nodes, greedyResult.path);
+	benchmark_start();
+	tsp_results.push_back(greedy(nodes));
+	benchmark_stop(nodes, tsp_results.back());
+	const TSPResult& greedyResult = tsp_results.back();
 
-	std::cerr << "Length:" << result.length << std::endl;
-	for (int index : result.path)
-	{
-		std::cout << index << "\n";
-	}
-	std::cout << std::endl;
+	benchmark_start();
+	tsp_results.push_back(tsp_opt2::run(nodes, greedyResult.path));
+	benchmark_stop(nodes, tsp_results.back());
 
-#ifdef WIN32
-	if (showGraphics)
-	{
-		graphic::draw_path(nodes, result.path);
-		graphic::run(nodes, result.path);
-	}
+	benchmark_start();
+	tsp_results.push_back(opt2(nodes, greedyResult.path));
+	benchmark_stop(nodes, tsp_results.back());
+
+	//benchmark_start();
+	//tsp_results.push_back(allPermutations(nodes));
+	//benchmark_stop(nodes, tsp_results.back());
+
+	benchmark_start();
+	tsp_results.push_back(tsp_approx_greedy_opt2::run(nodes));
+	benchmark_stop(nodes, tsp_results.back());
+
+	graphic::construct();
+	graphic::run(nodes, tsp_results);
 	fprintf(stderr, "main: end\n");
+#else
+	//FILE* file = fopen("input0.txt", "r+");
+	FILE* file = stdin;
+	const std::vector<Node> nodes = parseKattisFile(file);
+	
+	//TSPResult greedyResult = greedy(nodes);
+	//TSPResult tsp_result = tsp_opt2::run(nodes, greedyResult.path);
+
+	TSPResult tsp_result = tsp_approx_greedy_opt2::run(nodes);
+
+	for (int index : tsp_result.path)
+		std::cout << index << "\n";
 #endif
 	return 0;
 }

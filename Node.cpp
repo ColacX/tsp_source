@@ -97,6 +97,7 @@ std::vector<Node> parseKattisFile(FILE* file)
 	{
 		fscanf(file, "%f %f", &nodes[ii].x, &nodes[ii].y);
 		nodes[ii].index = ii;
+		//fprintf(stderr, "%d %f %f\n", ii, nodes[ii].x, nodes[ii].y);
 	}
 	return nodes;
 }
