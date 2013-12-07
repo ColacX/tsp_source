@@ -4,6 +4,10 @@
 #include <assert.h>
 #include "Node.h"
 
+#ifdef WIN32
+#include "graphic.h"
+#endif
+
 class Graph
 {
 public:
@@ -30,8 +34,8 @@ public:
 		return ::pathLength(path, nodes);
 	}
 
-private:
 	const std::vector<Node> nodes;
+private:
 	std::vector<int> distances;
 };
 
@@ -42,9 +46,11 @@ TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
 
 	while (true)
 	{
+#ifndef WIN32
 		double diff = double(clock() - startTime) / CLOCKS_PER_SEC;
 		if (diff > 1.65)
 			break;
+#endif
 		
 		int bestStart = 0, bestEnd = 0;
 		int bestImprovement = 0;
@@ -73,6 +79,10 @@ TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
 		{
 			//Reverse the sequence since an improvement was found
 			std::reverse(path.begin() + bestStart, path.begin() + bestEnd + 1);
+
+#ifdef WIN32
+			graphic::draw_path(graph.nodes, path);
+#endif
 		}
 		else
 		{
@@ -124,12 +134,17 @@ void updatePath(std::vector<int>& temp, std::vector<int>& path, int a1, int a2, 
 	std::swap(temp, path);
 }
 
-void testUpdate(const Graph& graph, bool& improvementFound, int currentDistance, std::vector<int>& temp, std::vector<int>& path, int a1, int a2, int b1, int b2, int c1, int c2)
+void testUpdate(const Graph& graph, bool& improvementFound, int& currentDistance, std::vector<int>& temp, std::vector<int>& path, int a1, int a2, int b1, int b2, int c1, int c2)
 {
-	if (connectionDistance(graph, path, a1, a2, b1, b2, c1, c2) < currentDistance)
+	int newDistance = connectionDistance(graph, path, a1, a2, b1, b2, c1, c2);
+	if (newDistance < currentDistance)
 	{
 		improvementFound = true;
+		currentDistance = newDistance;
 		updatePath(temp, path, a1, a2, b1, b2, c1, c2);
+#ifdef WIN32
+		graphic::draw_path(graph.nodes, path);
+#endif
 	}
 }
 
@@ -146,9 +161,11 @@ TSPResult opt3(std::vector<Node> inputpath, std::vector<int> path)
 		bool improvementFound = false;
 		for (int ii = 0; ii < int(path.size()) - 3; ii++)
 		{
+#ifndef WIN32
 			double diff = double(clock() - startTime) / CLOCKS_PER_SEC;
 			if (diff > 1.65)
 				break;
+#endif
 			for (int jj = ii + 1; jj < int(path.size()) - 2; jj++)
 			{
 				for (int kk = jj + 1; kk < int(path.size()) - 1; kk++)
@@ -161,6 +178,7 @@ TSPResult opt3(std::vector<Node> inputpath, std::vector<int> path)
 					testUpdate(graph, improvementFound, oldDistance, tempPath, path, ii, jj + 1, kk, jj, ii + 1, kk + 1);
 					testUpdate(graph, improvementFound, oldDistance, tempPath, path, ii, kk, jj + 1, jj, ii + 1, kk + 1);
 					testUpdate(graph, improvementFound, oldDistance, tempPath, path, ii, kk, jj + 1, ii + 1, jj, kk + 1);
+					testUpdate(graph, improvementFound, oldDistance, tempPath, path, ii, ii + 1, jj, kk, jj + 1, kk + 1);
 				}
 			}
 		}
