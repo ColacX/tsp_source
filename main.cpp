@@ -68,6 +68,7 @@ TSPResult greedy(const std::vector<Node>& nodes)
 }
 
 TSPResult opt2(std::vector<Node> inputNodes, std::vector<int> nodes);
+TSPResult opt3(std::vector<Node> inputNodes, std::vector<int> nodes);
 
 
 float euclidian_distance(float ax, float ay, float bx, float by)
@@ -109,10 +110,6 @@ int main(int argc, char* argv[])
 	TSPResult result;
 
 	result = opt2(nodes, greedyResult.path);
-	result = allPermutations(nodes);
-	float cycle_length = calculate_cycle_length(nodes, result.path);
-
-	printf("cycle_length %f\n", cycle_length);
 
 	std::cerr << "Length:" << result.length << std::endl;
 	for (int index : result.path)
