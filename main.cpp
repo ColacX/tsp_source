@@ -75,9 +75,11 @@ std::vector<Node> random_nodes()
 	return nodes;
 }
 
+#define KATTIS
+
 int main(int argc, char* argv[])
 {
-#ifdef WIN32
+#if defined(WIN32) && !defined(KATTIS) 
 	graphic::construct();
 	FILE* file = fopen("input0.txt", "r+");
 
@@ -109,14 +111,15 @@ int main(int argc, char* argv[])
 	graphic::run(nodes, tsp_results);
 	fprintf(stderr, "main: end\n");
 #else
+	clock_t startTime = clock();
 	//FILE* file = fopen("input0.txt", "r+");
 	FILE* file = stdin;
 	const std::vector<Node> nodes = parseKattisFile(file);
 	
-	//TSPResult greedyResult = greedy(nodes);
-	//TSPResult tsp_result = tsp_opt2::run(nodes, greedyResult.path);
+	TSPResult greedyResult = greedy(nodes);
+	TSPResult tsp_result = opt2(nodes, greedyResult.path, startTime);
 
-	TSPResult tsp_result = tsp_approx_greedy_opt2::run(nodes);
+	//TSPResult tsp_result = tsp_approx_greedy_opt2::run(nodes);
 
 	for (int index : tsp_result.path)
 		std::cout << index << "\n";

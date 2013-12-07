@@ -57,7 +57,8 @@ TSPResult greedy(const std::vector<Node>& nodes)
 	return result;
 }
 
-TSPResult opt2(std::vector<Node> inputNodes, std::vector<int> nodes);
+TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path, clock_t startTime);
+TSPResult opt3(std::vector<Node> inputpath, std::vector<int> path, clock_t startTime);
 
 
 float euclidian_distance(float ax, float ay, float bx, float by)

@@ -39,10 +39,9 @@ private:
 	std::vector<int> distances;
 };
 
-TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
+TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path, clock_t startTime)
 {
 	Graph graph(inputpath);
-	clock_t startTime = clock();
 
 	while (true)
 	{
@@ -138,10 +137,9 @@ void testUpdate(const Graph& graph, bool& improvementFound, int& currentDistance
 	}
 }
 
-TSPResult opt3(std::vector<Node> inputpath, std::vector<int> path)
+TSPResult opt3(std::vector<Node> inputpath, std::vector<int> path, clock_t startTime)
 {
 	Graph graph(inputpath);
-	clock_t startTime = clock();
 
 	//A vector that can be used for temporary storage when updating the path
 	std::vector<int> tempPath(path.size());
