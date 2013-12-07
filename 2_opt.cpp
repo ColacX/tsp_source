@@ -51,9 +51,7 @@ TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
 		if (diff > 1.65)
 			break;
 #endif
-		
-		int bestStart = 0, bestEnd = 0;
-		int bestImprovement = 0;
+		bool improvementFound = false;
 		for (int ii = 0; ii < int(path.size()) - 2; ii++)
 		{
 			for (int jj = ii + 1; jj < int(path.size()) - 1; jj++)
@@ -67,26 +65,19 @@ TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path)
 				int oldConnection = graph.distance(endB, beginA) + graph.distance(endA, beginB);
 				int newConnection = graph.distance(endB, endA) + graph.distance(beginA, beginB);
 				int improvement = oldConnection - newConnection;
-				if (improvement > bestImprovement)
+				if (oldConnection > newConnection)
 				{
-					bestStart = ii;
-					bestEnd = jj;
-					bestImprovement = improvement;
+					improvementFound = true;
+					//Reverse the sequence since an improvement was found
+					std::reverse(path.begin() + ii, path.begin() + jj + 1);
+#ifdef USE_GRAPHICS
+					graphic::draw_path(graph.nodes, path);
+#endif
 				}
 			}
 		}
-		if (bestImprovement > 0)
+		if (!improvementFound)
 		{
-			//Reverse the sequence since an improvement was found
-			std::reverse(path.begin() + bestStart, path.begin() + bestEnd + 1);
-
-#ifdef USE_GRAPHICS
-			graphic::draw_path(graph.nodes, path);
-#endif
-		}
-		else
-		{
-			//No improvement was found
 			break;
 		}
 	}
@@ -100,7 +91,6 @@ int connectionDistance(const Graph& graph, const std::vector<int>& path, int a1,
 {
 	return graph.distance(path[a1], path[a2]) + graph.distance(path[b1], path[b2]) + graph.distance(path[c1], path[c2]);
 }
-
 
 void updatePath(std::vector<int>& temp, std::vector<int>& path, int a1, int a2, int b1, int b2, int c1, int c2)
 {
