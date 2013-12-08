@@ -34,19 +34,7 @@ std::vector<Node> parseKattisFile(FILE* input);
 class Graph
 {
 public:
-	explicit Graph(std::vector<Node> inputNodes)
-		: nodes(std::move(inputNodes))
-		, distances(nodes.size() * nodes.size())
-	{
-		for (size_t ii = 0; ii < nodes.size(); ii++)
-		{
-			for (size_t jj = ii + 1; jj < nodes.size(); jj++)
-			{
-				distances[ii + jj * nodes.size()] = ::distance(nodes[ii], nodes[jj]);
-				distances[jj + ii * nodes.size()] = distances[ii + jj * nodes.size()];
-			}
-		}
-	}
+	explicit Graph(std::vector<Node> inputNodes);
 
 	int distance(size_t l, size_t r) const
 	{

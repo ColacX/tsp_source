@@ -8,6 +8,21 @@
 #include <string>
 #include <assert.h>
 
+
+Graph::Graph(std::vector<Node> inputNodes)
+	: nodes(std::move(inputNodes))
+	, distances(nodes.size() * nodes.size())
+{
+	for (size_t ii = 0; ii < nodes.size(); ii++)
+	{
+		for (size_t jj = ii + 1; jj < nodes.size(); jj++)
+		{
+			distances[ii + jj * nodes.size()] = ::distance(nodes[ii], nodes[jj]);
+			distances[jj + ii * nodes.size()] = distances[ii + jj * nodes.size()];
+		}
+	}
+}
+
 bool less_compare(const Node& l, const Node& r)
 {
 	if (l.x == r.x)
