@@ -5,7 +5,7 @@
 
 
 #ifdef WIN32
-#define USE_GRAPHICS 1
+//#define USE_GRAPHICS 1
 
 #include <Windows.h>
 #undef min

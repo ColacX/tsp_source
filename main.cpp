@@ -113,13 +113,31 @@ int main(int argc, char* argv[])
 #else
 	clock_t startTime = clock();
 	//FILE* file = fopen("input0.txt", "r+");
+	//std::fstream f("a280.tsp");
 	FILE* file = stdin;
 	const std::vector<Node> nodes = parseKattisFile(file);
 	
-	TSPResult greedyResult = greedy(nodes);
-	TSPResult tsp_result = opt2(nodes, greedyResult.path, startTime);
+	TSPResult tsp_result;
+	if (nodes.size() < 13)
+	{
+		tsp_result = allPermutations(nodes);
+	}
+	else
+	{
+		TSPResult greedyResult = greedy(nodes);
+		tsp_result = opt2(nodes, greedyResult.path, startTime);
+		TSPResult tsp_result2 = opt3(nodes, tsp_result.path, startTime);
+		TSPResult tsp_result3 = opt2(nodes, tsp_result2.path, startTime);
 
-	//TSPResult tsp_result = tsp_approx_greedy_opt2::run(nodes);
+		if (tsp_result2.length < tsp_result.length)
+		{
+			std::swap(tsp_result, tsp_result2);
+		}
+		if (tsp_result3.length < tsp_result.length)
+		{
+			std::swap(tsp_result, tsp_result3);
+		}
+	}
 
 	for (int index : tsp_result.path)
 		std::cout << index << "\n";

@@ -42,12 +42,11 @@ private:
 TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path, clock_t startTime)
 {
 	Graph graph(inputpath);
-
 	while (true)
 	{
 #ifndef WIN32
 		double diff = double(clock() - startTime) / CLOCKS_PER_SEC;
-		if (diff > 1.65)
+		if (diff > 1.8)
 			break;
 #endif
 		bool improvementFound = false;
@@ -63,7 +62,6 @@ TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path, clock_t start
 
 				int oldConnection = graph.distance(endB, beginA) + graph.distance(endA, beginB);
 				int newConnection = graph.distance(endB, endA) + graph.distance(beginA, beginB);
-				int improvement = oldConnection - newConnection;
 				if (oldConnection > newConnection)
 				{
 					improvementFound = true;
