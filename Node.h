@@ -38,9 +38,10 @@ public:
 	{
 		for (size_t ii = 0; ii < nodes.size(); ii++)
 		{
-			for (size_t jj = 0; jj < nodes.size(); jj++)
+			for (size_t jj = ii + 1; jj < nodes.size(); jj++)
 			{
 				distances[ii + jj * nodes.size()] = ::distance(nodes[ii], nodes[jj]);
+				distances[jj + ii * nodes.size()] = distances[ii + jj * nodes.size()];
 			}
 		}
 	}
