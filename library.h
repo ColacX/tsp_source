@@ -43,7 +43,7 @@ TSPResult greedy(const std::vector<Node>& nodes)
 		int best = -1;
 		for (int jj = 0; jj < int(nodes.size()); jj++)
 		{
-			const Node& current = nodes[path[ii]];
+			const Node& current = nodes[path[ii-1]];
 			if (!used[jj] && (best == -1 || distance(current, nodes[jj]) < distance(current, nodes[best])))
 				best = jj;
 		}
