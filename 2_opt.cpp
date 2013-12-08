@@ -8,40 +8,8 @@
 #include "graphic.h"
 #endif
 
-class Graph
+TSPResult opt2(const Graph& graph, std::vector<int> path, clock_t startTime)
 {
-public:
-	Graph(std::vector<Node> inputNodes)
-		: nodes(std::move(inputNodes))
-		, distances(nodes.size() * nodes.size())
-	{
-		for (size_t ii = 0; ii < nodes.size(); ii++)
-		{
-			for (size_t jj = 0; jj < nodes.size(); jj++)
-			{
-				distances[ii + jj * nodes.size()] = ::distance(nodes[ii], nodes[jj]);
-			}
-		}
-	}
-
-	int distance(size_t l, size_t r) const
-	{
-		return distances[l + r * nodes.size()];
-	}
-
-	int pathLength(const std::vector<int>& path) const
-	{
-		return ::pathLength(path, nodes);
-	}
-
-	const std::vector<Node> nodes;
-private:
-	std::vector<int> distances;
-};
-
-TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path, clock_t startTime)
-{
-	Graph graph(inputpath);
 	while (true)
 	{
 		bool improvementFound = false;
@@ -136,10 +104,8 @@ void testUpdate(const Graph& graph, bool& improvementFound, int& currentDistance
 	}
 }
 
-TSPResult opt3(std::vector<Node> inputpath, std::vector<int> path, clock_t startTime)
+TSPResult opt3(const Graph& graph, std::vector<int> path, clock_t startTime)
 {
-	Graph graph(inputpath);
-
 	//A vector that can be used for temporary storage when updating the path
 	std::vector<int> tempPath(path.size());
 

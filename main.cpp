@@ -124,10 +124,11 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		TSPResult greedyResult = greedy(nodes);
-		tsp_result = opt2(nodes, greedyResult.path, startTime);
-		TSPResult tsp_result2 = opt3(nodes, tsp_result.path, startTime);
-		TSPResult tsp_result3 = opt2(nodes, tsp_result2.path, startTime);
+		Graph graph(nodes);
+		TSPResult greedyResult = greedy(graph);
+		tsp_result = opt2(graph, greedyResult.path, startTime);
+		TSPResult tsp_result2 = opt3(graph, tsp_result.path, startTime);
+		TSPResult tsp_result3 = opt2(graph, tsp_result2.path, startTime);
 
 		if (tsp_result2.length < tsp_result.length)
 		{

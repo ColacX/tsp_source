@@ -31,20 +31,20 @@ TSPResult allPermutations(std::vector<Node> nodes)
 	return result;
 }
 
-TSPResult greedy(const std::vector<Node>& nodes)
+TSPResult greedy(const Graph& graph)
 {
 	fprintf(stderr, "running greedy...\n");
-	std::vector<int> path(nodes.size());
-	std::vector<bool> used(nodes.size());
+	std::vector<int> path(graph.nodes.size());
+	std::vector<bool> used(graph.nodes.size());
 	path[0] = 0;
 	used[0] = true;
-	for (size_t ii = 1; ii < nodes.size(); ii++)
+	for (size_t ii = 1; ii < graph.nodes.size(); ii++)
 	{
 		int best = -1;
-		for (int jj = 0; jj < int(nodes.size()); jj++)
+		for (int jj = 0; jj < int(graph.nodes.size()); jj++)
 		{
-			const Node& current = nodes[path[ii]];
-			if (!used[jj] && (best == -1 || distance(current, nodes[jj]) < distance(current, nodes[best])))
+			int current = path[ii];
+			if (!used[jj] && (best == -1 || graph.distance(current, jj) < graph.distance(current, best)))
 				best = jj;
 		}
 
@@ -52,13 +52,13 @@ TSPResult greedy(const std::vector<Node>& nodes)
 		used[best] = true;
 	}
 	TSPResult result;
-	result.length = pathLength(path, nodes);
+	result.length = graph.pathLength(path);
 	result.path = std::move(path);
 	return result;
 }
 
-TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path, clock_t startTime);
-TSPResult opt3(std::vector<Node> inputpath, std::vector<int> path, clock_t startTime);
+TSPResult opt2(const Graph& graph, std::vector<int> path, clock_t startTime);
+TSPResult opt3(const Graph& graph, std::vector<int> path, clock_t startTime);
 
 
 float euclidian_distance(float ax, float ay, float bx, float by)
