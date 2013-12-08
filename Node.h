@@ -46,7 +46,19 @@ public:
 		return ::pathLength(path, nodes);
 	}
 
+	const std::vector<int>& getNeighbours(size_t i) const
+	{
+		return nearestNeighbours[i];
+	}
+
+	int getMinLink() const
+	{
+		return minLink;
+	}
+
 	const std::vector<Node> nodes;
 private:
 	std::vector<int> distances;
+	std::vector<std::vector<int>> nearestNeighbours;
+	int minLink;
 };

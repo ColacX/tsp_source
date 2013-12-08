@@ -6,20 +6,32 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string>
+#include <algorithm>
 #include <assert.h>
 
 
 Graph::Graph(std::vector<Node> inputNodes)
 	: nodes(std::move(inputNodes))
 	, distances(nodes.size() * nodes.size())
+	, nearestNeighbours(nodes.size(), std::vector<int>(nodes.size()))
+	, minLink(std::numeric_limits<int>::max())
 {
 	for (size_t ii = 0; ii < nodes.size(); ii++)
 	{
+		std::vector<int>& neighbours = nearestNeighbours[ii];
+		neighbours.clear();
 		for (size_t jj = ii + 1; jj < nodes.size(); jj++)
 		{
 			distances[ii + jj * nodes.size()] = ::distance(nodes[ii], nodes[jj]);
 			distances[jj + ii * nodes.size()] = distances[ii + jj * nodes.size()];
+			minLink = std::min(minLink, distance(ii, jj));
+			neighbours.push_back(jj);
 		}
+		auto cmp = [this, ii](int lhs, int rhs)
+		{
+			return distance(ii, lhs) < distance(ii, rhs);
+		};
+		std::sort(neighbours.begin(), neighbours.end(), cmp);
 	}
 }
 
