@@ -7,7 +7,7 @@ TSPResult allPermutations(std::vector<Node> nodes)
 {
 	fprintf(stderr, "running allPermutations...\n");
 	const std::vector<Node> originalNodes = nodes;
-	std::vector<int> path(nodes.size());
+	Path path(nodes.size());
 	std::sort(nodes.begin(), nodes.end(), less_compare);
 	int minLength = std::numeric_limits<int>::max();
 	int permutation = 0;
@@ -34,7 +34,7 @@ TSPResult allPermutations(std::vector<Node> nodes)
 TSPResult greedy(const Graph& graph)
 {
 	fprintf(stderr, "running greedy...\n");
-	std::vector<int> path(graph.nodes.size());
+	Path path(graph.nodes.size());
 	std::vector<bool> used(graph.nodes.size());
 	path[0] = 0;
 	used[0] = true;
@@ -57,8 +57,8 @@ TSPResult greedy(const Graph& graph)
 	return result;
 }
 
-TSPResult opt2(const Graph& graph, std::vector<int> path, clock_t startTime);
-TSPResult opt3(const Graph& graph, std::vector<int> path, clock_t startTime);
+TSPResult opt2(const Graph& graph, Path path, clock_t startTime);
+TSPResult opt3(const Graph& graph, Path path, clock_t startTime);
 
 
 float euclidian_distance(float ax, float ay, float bx, float by)
@@ -68,7 +68,7 @@ float euclidian_distance(float ax, float ay, float bx, float by)
 	return float(round(sqrtf(dx*dx + dy*dy)));
 }
 
-float calculate_cycle_length(const std::vector<Node> nodes, const std::vector<int> path)
+float calculate_cycle_length(const std::vector<Node> nodes, const Path path)
 {
 	float cycle_distance = 0.0f;
 

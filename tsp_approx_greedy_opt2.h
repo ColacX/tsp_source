@@ -14,7 +14,7 @@ namespace tsp_approx_greedy_opt2
 		return dx*dx + dy*dy;
 	}
 
-	float quick_length(const std::vector<int>& path)
+	float quick_length(const Path& path)
 	{
 		float length = 0;
 		
@@ -63,7 +63,7 @@ namespace tsp_approx_greedy_opt2
 
 		fprintf(stderr, "best cell size: %d\n", best_cell_size);
 		float best_length = std::numeric_limits<float>::max();
-		std::vector<int> best_path;
+		Path best_path;
 
 		while (true)
 		{
@@ -74,7 +74,7 @@ namespace tsp_approx_greedy_opt2
 			}
 
 			//greedy part
-			std::vector<int> path(node_count);
+			Path path(node_count);
 			//std::vector<bool> used(node_count);
 
 			////start the path at a random node

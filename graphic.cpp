@@ -45,7 +45,7 @@ bool less_index_compare(const Node& l, const Node& r)
 	return l.index < r.index;
 }
 
-void draw_path(const std::vector<Node>& nodes, const std::vector<int>& shortestPath)
+void draw_path(const std::vector<Node>& nodes, const Path& shortestPath)
 {
 	if (nodes.empty() || shortestPath.empty())
 		return;

@@ -8,7 +8,7 @@
 #include "graphic.h"
 #endif
 
-TSPResult opt2(const Graph& graph, std::vector<int> path, clock_t startTime)
+TSPResult opt2(const Graph& graph, Path path, clock_t startTime)
 {
 	while (true)
 	{
@@ -53,12 +53,12 @@ TSPResult opt2(const Graph& graph, std::vector<int> path, clock_t startTime)
 	return result;
 }
 
-int connectionDistance(const Graph& graph, const std::vector<int>& path, int a1, int a2, int b1, int b2, int c1, int c2)
+int connectionDistance(const Graph& graph, const Path& path, int a1, int a2, int b1, int b2, int c1, int c2)
 {
 	return graph.distance(path[a1], path[a2]) + graph.distance(path[b1], path[b2]) + graph.distance(path[c1], path[c2]);
 }
 
-void updatePath(std::vector<int>& temp, std::vector<int>& path, int a1, int a2, int b1, int b2, int c1, int c2)
+void updatePath(Path& temp, Path& path, int a1, int a2, int b1, int b2, int c1, int c2)
 {
 	auto tempIter = temp.begin();
 	std::copy(path.begin(), path.begin() + a1 + 1, tempIter);
@@ -90,7 +90,7 @@ void updatePath(std::vector<int>& temp, std::vector<int>& path, int a1, int a2, 
 	std::swap(temp, path);
 }
 
-void testUpdate(const Graph& graph, bool& improvementFound, int& currentDistance, std::vector<int>& temp, std::vector<int>& path, int a1, int a2, int b1, int b2, int c1, int c2)
+void testUpdate(const Graph& graph, bool& improvementFound, int& currentDistance, Path& temp, Path& path, int a1, int a2, int b1, int b2, int c1, int c2)
 {
 	int newDistance = connectionDistance(graph, path, a1, a2, b1, b2, c1, c2);
 	if (newDistance < currentDistance)
@@ -104,10 +104,10 @@ void testUpdate(const Graph& graph, bool& improvementFound, int& currentDistance
 	}
 }
 
-TSPResult opt3(const Graph& graph, std::vector<int> path, clock_t startTime)
+TSPResult opt3(const Graph& graph, Path path, clock_t startTime)
 {
 	//A vector that can be used for temporary storage when updating the path
-	std::vector<int> tempPath(path.size());
+	Path tempPath(path.size());
 
 	while (true)
 	{

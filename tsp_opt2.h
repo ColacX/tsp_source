@@ -27,7 +27,7 @@ namespace tsp_opt2
 		}
 
 		//initial path
-		std::vector<int> path_indices(node_count);
+		Path path_indices(node_count);
 		for (int ia = 0; ia < node_count; ia++)
 			path_indices[ia] = greedy_path[ia];
 
@@ -42,7 +42,7 @@ namespace tsp_opt2
 
 		const double randomize_max = 1;
 		float best_length = std::numeric_limits<float>::max();
-		std::vector<int> best_path;
+		Path best_path;
 
 		for (int ia = 0; ia < randomize_max; ia++)
 		{

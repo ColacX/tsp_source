@@ -3,10 +3,12 @@
 #include <stdio.h>
 #include <iosfwd>
 
+typedef std::vector<int> Path;
+
 struct TSPResult
 {
 	int length;
-	std::vector<int> path;
+	Path path;
 };
 
 struct Node
@@ -20,7 +22,7 @@ bool less_compare(const Node& l, const Node& r);
 int distance(const Node& l, const Node& r);
 
 int pathLength(const std::vector<Node>& nodes);
-int pathLength(const std::vector<int>& path, const std::vector<Node>& nodes);
+int pathLength(const Path& path, const std::vector<Node>& nodes);
 
 std::vector<int> getPathVector(const std::vector<Node>& nodes);
 
@@ -51,7 +53,7 @@ public:
 		return distances[l + r * nodes.size()];
 	}
 
-	int pathLength(const std::vector<int>& path) const
+	int pathLength(const Path& path) const
 	{
 		return ::pathLength(path, nodes);
 	}

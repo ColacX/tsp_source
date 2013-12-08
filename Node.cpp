@@ -31,7 +31,7 @@ int pathLength(const std::vector<Node>& nodes)
 	length += distance(nodes.front(), nodes.back());
 	return length;
 }
-int pathLength(const std::vector<int>& path, const std::vector<Node>& nodes)
+int pathLength(const Path& path, const std::vector<Node>& nodes)
 {
 	int length = 0;
 	for (size_t ii = 0; ii < nodes.size() - 1; ii++)
