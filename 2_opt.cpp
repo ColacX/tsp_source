@@ -44,14 +44,14 @@ TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path, clock_t start
 	Graph graph(inputpath);
 	while (true)
 	{
-#ifndef WIN32
-		double diff = double(clock() - startTime) / CLOCKS_PER_SEC;
-		if (diff > 1.8)
-			break;
-#endif
 		bool improvementFound = false;
 		for (int ii = 0; ii < int(path.size()) - 2; ii++)
 		{
+#ifndef WIN32
+			double diff = double(clock() - startTime) / CLOCKS_PER_SEC;
+			if (diff > 1.8)
+				goto out;
+#endif
 			for (int jj = ii + 1; jj < int(path.size()) - 1; jj++)
 			{
 				//ii is the start of the first sequence, jj the end of it
@@ -78,6 +78,7 @@ TSPResult opt2(std::vector<Node> inputpath, std::vector<int> path, clock_t start
 			break;
 		}
 	}
+	out:
 	TSPResult result;
 	result.path = path;
 	result.length = graph.pathLength(path);
@@ -150,7 +151,7 @@ TSPResult opt3(std::vector<Node> inputpath, std::vector<int> path, clock_t start
 #ifndef WIN32
 			double diff = double(clock() - startTime) / CLOCKS_PER_SEC;
 			if (diff > 1.65)
-				break;
+				goto out;
 #endif
 			for (int jj = ii + 1; jj < int(path.size()) - 2; jj++)
 			{
@@ -173,6 +174,7 @@ TSPResult opt3(std::vector<Node> inputpath, std::vector<int> path, clock_t start
 			break;
 		}
 	}
+	out:
 	TSPResult result;
 	result.path = path;
 	result.length = graph.pathLength(path);
