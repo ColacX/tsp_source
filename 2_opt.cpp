@@ -17,7 +17,7 @@ TSPResult opt2(const Graph& graph, std::vector<int> path, clock_t startTime)
 		{
 #ifndef WIN32
 			double diff = double(clock() - startTime) / CLOCKS_PER_SEC;
-			if (diff > 1.8)
+			if (diff > 1.74)
 				goto out;
 #endif
 			for (int jj = ii + 1; jj < int(path.size()) - 1; jj++)
@@ -53,10 +53,6 @@ TSPResult opt2(const Graph& graph, std::vector<int> path, clock_t startTime)
 	return result;
 }
 
-int connectionDistance(const Graph& graph, const std::vector<int>& path, int a1, int a2, int b1, int b2, int c1, int c2)
-{
-	return graph.distance(path[a1], path[a2]) + graph.distance(path[b1], path[b2]) + graph.distance(path[c1], path[c2]);
-}
 
 void updatePath(std::vector<int>& temp, std::vector<int>& path, int a1, int a2, int b1, int b2, int c1, int c2)
 {
@@ -90,19 +86,27 @@ void updatePath(std::vector<int>& temp, std::vector<int>& path, int a1, int a2, 
 	std::swap(temp, path);
 }
 
-void testUpdate(const Graph& graph, bool& improvementFound, int& currentDistance, std::vector<int>& temp, std::vector<int>& path, int a1, int a2, int b1, int b2, int c1, int c2)
+struct Opt3Update
 {
-	int newDistance = connectionDistance(graph, path, a1, a2, b1, b2, c1, c2);
-	if (newDistance < currentDistance)
-	{
-		improvementFound = true;
-		currentDistance = newDistance;
-		updatePath(temp, path, a1, a2, b1, b2, c1, c2);
-#ifdef USE_GRAPHICS
-		graphic::draw_path(graph.nodes, path);
-#endif
-	}
+	int a1, a2, b1, b2, c1, c2;
+};
+
+
+//Use a macros to make sure distance lookups are shared
+#define connectionDistance(graph, path, a1, a2, b1, b2, c1, c2)\
+	(graph.distance(path[a1], path[a2]) + graph.distance(path[b1], path[b2]) + graph.distance(path[c1], path[c2]))
+
+#define testUpdate(graph, update, improvementFound, currentDistance, temp, path, a1, a2, b1, b2, c1, c2)\
+{\
+	int newDistance = connectionDistance(graph, path, a1, a2, b1, b2, c1, c2);\
+	if (newDistance < currentDistance)\
+	{\
+		improvementFound = true;\
+		currentDistance = newDistance;\
+		update = { a1, a2, b1, b2, c1, c2 };\
+	}\
 }
+
 
 TSPResult opt3(const Graph& graph, std::vector<int> path, clock_t startTime)
 {
@@ -123,15 +127,22 @@ TSPResult opt3(const Graph& graph, std::vector<int> path, clock_t startTime)
 			{
 				for (int kk = jj + 1; kk < int(path.size()) - 1; kk++)
 				{
+					bool improv = false;
 					int oldDistance = connectionDistance(graph, path, ii, ii+1, jj, jj+1, kk, kk+1);
+					Opt3Update update;
+					testUpdate(graph, update, improv, oldDistance, tempPath, path, ii, jj, ii + 1, jj + 1, kk, kk + 1);
+					testUpdate(graph, update, improv, oldDistance, tempPath, path, ii, jj, ii + 1, kk, jj + 1, kk + 1);
+					testUpdate(graph, update, improv, oldDistance, tempPath, path, ii, jj + 1, kk, ii + 1, jj, kk + 1);
+					testUpdate(graph, update, improv, oldDistance, tempPath, path, ii, jj + 1, kk, jj, ii + 1, kk + 1);
+					testUpdate(graph, update, improv, oldDistance, tempPath, path, ii, kk, jj + 1, jj, ii + 1, kk + 1);
+					testUpdate(graph, update, improv, oldDistance, tempPath, path, ii, kk, jj + 1, ii + 1, jj, kk + 1);
+					testUpdate(graph, update, improv, oldDistance, tempPath, path, ii, ii + 1, jj, kk, jj + 1, kk + 1);
 
-					testUpdate(graph, improvementFound, oldDistance, tempPath, path, ii, jj, ii + 1, jj + 1, kk, kk + 1);
-					testUpdate(graph, improvementFound, oldDistance, tempPath, path, ii, jj, ii + 1, kk, jj + 1, kk + 1);
-					testUpdate(graph, improvementFound, oldDistance, tempPath, path, ii, jj + 1, kk, ii + 1, jj, kk + 1);
-					testUpdate(graph, improvementFound, oldDistance, tempPath, path, ii, jj + 1, kk, jj, ii + 1, kk + 1);
-					testUpdate(graph, improvementFound, oldDistance, tempPath, path, ii, kk, jj + 1, jj, ii + 1, kk + 1);
-					testUpdate(graph, improvementFound, oldDistance, tempPath, path, ii, kk, jj + 1, ii + 1, jj, kk + 1);
-					testUpdate(graph, improvementFound, oldDistance, tempPath, path, ii, ii + 1, jj, kk, jj + 1, kk + 1);
+					if (improv)
+					{
+						updatePath(tempPath, path, update.a1, update.a2, update.b1, update.b2, update.c1, update.c2);
+						improvementFound = improvementFound | improv;
+					}
 				}
 			}
 		}

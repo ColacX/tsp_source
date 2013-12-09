@@ -127,17 +127,8 @@ int main(int argc, char* argv[])
 		Graph graph(nodes);
 		TSPResult greedyResult = greedy(graph);
 		tsp_result = opt2(graph, greedyResult.path, startTime);
-		TSPResult tsp_result2 = opt3(graph, tsp_result.path, startTime);
-		TSPResult tsp_result3 = opt2(graph, tsp_result2.path, startTime);
-
-		if (tsp_result2.length < tsp_result.length)
-		{
-			std::swap(tsp_result, tsp_result2);
-		}
-		if (tsp_result3.length < tsp_result.length)
-		{
-			std::swap(tsp_result, tsp_result3);
-		}
+		tsp_result = opt3(graph, tsp_result.path, startTime);
+		tsp_result = opt2(graph, tsp_result.path, startTime);
 	}
 
 	for (int index : tsp_result.path)
